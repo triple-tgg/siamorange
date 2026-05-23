@@ -149,15 +149,24 @@ orderStatus.post('/aff-purchases', async (c) => {
   }
 });
 
-/**
- * Get affiliate ranking by year and month
- * GET /api/orders/affiliate-ranking
- */
 orderStatus.get('/affiliate-ranking', async (c) => {
   const env = c.env;
-  const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
+  const request = c.req.raw;
+  const cache = caches.default;
 
   try {
+    // 1. Try to retrieve from Cloudflare Global Cache Server (CDN)
+    const cachedResponse = await cache.match(request);
+    if (cachedResponse) {
+      const newHeaders = new Headers(cachedResponse.headers);
+      newHeaders.set('X-Cache-Server', 'HIT');
+      return new Response(cachedResponse.body, {
+        status: cachedResponse.status,
+        headers: newHeaders,
+      });
+    }
+
+    const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
     let year = c.req.query('y');
     const month = c.req.query('m');
 
@@ -169,19 +178,6 @@ orderStatus.get('/affiliate-ranking', async (c) => {
     const yearNum = parseInt(year, 10);
     if (!isNaN(yearNum) && yearNum < 2500) {
       year = (yearNum + 543).toString();
-    }
-
-    // Check cache
-    const cacheKey = `ranking_affiliate_${year}_${month}`;
-    const cachedData = await getCachedData(env, cacheKey);
-    if (cachedData) {
-      return new Response(cachedData, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'X-Cache': 'HIT',
-        },
-      });
     }
 
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
@@ -199,19 +195,22 @@ orderStatus.get('/affiliate-ranking', async (c) => {
       }
     }
 
-    // Cache the response if fetch succeeded (HTTP 200)
-    if (n8nRes.ok) {
-      const ttl = getRankingCacheTtl(year, month);
-      await setCachedData(env, cacheKey, responseBody, ttl);
-    }
-
-    return new Response(responseBody, {
+    const ttl = getRankingCacheTtl(year, month);
+    const response = new Response(responseBody, {
       status: n8nRes.status,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'X-Cache': 'MISS',
+        'Cache-Control': `public, max-age=${ttl}`, // Tell Cloudflare CDN how long to cache
+        'X-Cache-Server': 'MISS',
       },
     });
+
+    // Store in Cloudflare Cache Server (only successful responses)
+    if (n8nRes.ok) {
+      c.executionCtx.waitUntil(cache.put(request, response.clone()));
+    }
+
+    return response;
   } catch (err) {
     console.error('Affiliate ranking error:', err);
     return c.json({ error: 'Failed to fetch affiliate ranking' }, 500);
@@ -224,9 +223,22 @@ orderStatus.get('/affiliate-ranking', async (c) => {
  */
 orderStatus.get('/purchase-ranking', async (c) => {
   const env = c.env;
-  const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
+  const request = c.req.raw;
+  const cache = caches.default;
 
   try {
+    // 1. Try to retrieve from Cloudflare Global Cache Server (CDN)
+    const cachedResponse = await cache.match(request);
+    if (cachedResponse) {
+      const newHeaders = new Headers(cachedResponse.headers);
+      newHeaders.set('X-Cache-Server', 'HIT');
+      return new Response(cachedResponse.body, {
+        status: cachedResponse.status,
+        headers: newHeaders,
+      });
+    }
+
+    const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
     let year = c.req.query('y');
     const month = c.req.query('m');
 
@@ -238,19 +250,6 @@ orderStatus.get('/purchase-ranking', async (c) => {
     const yearNum = parseInt(year, 10);
     if (!isNaN(yearNum) && yearNum < 2500) {
       year = (yearNum + 543).toString();
-    }
-
-    // Check cache
-    const cacheKey = `ranking_purchase_${year}_${month}`;
-    const cachedData = await getCachedData(env, cacheKey);
-    if (cachedData) {
-      return new Response(cachedData, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'X-Cache': 'HIT',
-        },
-      });
     }
 
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
@@ -268,19 +267,22 @@ orderStatus.get('/purchase-ranking', async (c) => {
       }
     }
 
-    // Cache the response if fetch succeeded (HTTP 200)
-    if (n8nRes.ok) {
-      const ttl = getRankingCacheTtl(year, month);
-      await setCachedData(env, cacheKey, responseBody, ttl);
-    }
-
-    return new Response(responseBody, {
+    const ttl = getRankingCacheTtl(year, month);
+    const response = new Response(responseBody, {
       status: n8nRes.status,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'X-Cache': 'MISS',
+        'Cache-Control': `public, max-age=${ttl}`, // Tell Cloudflare CDN how long to cache
+        'X-Cache-Server': 'MISS',
       },
     });
+
+    // Store in Cloudflare Cache Server (only successful responses)
+    if (n8nRes.ok) {
+      c.executionCtx.waitUntil(cache.put(request, response.clone()));
+    }
+
+    return response;
   } catch (err) {
     console.error('Purchase ranking error:', err);
     return c.json({ error: 'Failed to fetch purchase ranking' }, 500);
