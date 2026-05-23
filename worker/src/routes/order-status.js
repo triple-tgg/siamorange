@@ -7,6 +7,71 @@ import { Hono } from 'hono';
 
 const orderStatus = new Hono();
 
+// --- Best-Effort In-Memory Cache for Rate Limit Prevention ---
+const memoryCache = new Map();
+
+function getMemoryCache(key) {
+  const cached = memoryCache.get(key);
+  if (!cached) return null;
+  if (Date.now() > cached.expiry) {
+    memoryCache.delete(key);
+    return null;
+  }
+  return cached.data;
+}
+
+function setMemoryCache(key, data, ttlSeconds) {
+  memoryCache.set(key, {
+    data,
+    expiry: Date.now() + (ttlSeconds * 1000)
+  });
+}
+
+async function getCachedData(env, key) {
+  if (env.PRODUCTS_KV) {
+    try {
+      const val = await env.PRODUCTS_KV.get(key);
+      if (val) return val;
+    } catch (e) {
+      console.error('KV get error:', e);
+    }
+  }
+  return getMemoryCache(key);
+}
+
+async function setCachedData(env, key, data, ttlSeconds) {
+  if (env.PRODUCTS_KV) {
+    try {
+      await env.PRODUCTS_KV.put(key, data, { expirationTtl: ttlSeconds });
+    } catch (e) {
+      console.error('KV put error:', e);
+    }
+  }
+  setMemoryCache(key, data, ttlSeconds);
+}
+
+function getRankingCacheTtl(year, month) {
+  // Determine if it is the current month and year
+  const now = new Date();
+  const currentYearBE = now.getFullYear() + 543;
+  const currentMonth = now.getMonth() + 1;
+
+  const reqYear = parseInt(year, 10);
+  const reqMonth = parseInt(month, 10);
+
+  if (isNaN(reqYear) || isNaN(reqMonth)) {
+    return 300; // Default 5 mins
+  }
+
+  // If current or future month, cache for 5 minutes (300s)
+  if (reqYear > currentYearBE || (reqYear === currentYearBE && reqMonth >= currentMonth)) {
+    return 300;
+  }
+
+  // If past month, cache for 24 hours (86400s) because past months rankings are static
+  return 86400;
+}
+
 /**
  * Get personal purchase orders by phone
  * POST /api/orders/my-purchases
@@ -106,6 +171,19 @@ orderStatus.get('/affiliate-ranking', async (c) => {
       year = (yearNum + 543).toString();
     }
 
+    // Check cache
+    const cacheKey = `ranking_affiliate_${year}_${month}`;
+    const cachedData = await getCachedData(env, cacheKey);
+    if (cachedData) {
+      return new Response(cachedData, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'X-Cache': 'HIT',
+        },
+      });
+    }
+
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
     const responseText = await n8nRes.text();
 
@@ -121,10 +199,17 @@ orderStatus.get('/affiliate-ranking', async (c) => {
       }
     }
 
+    // Cache the response if fetch succeeded (HTTP 200)
+    if (n8nRes.ok) {
+      const ttl = getRankingCacheTtl(year, month);
+      await setCachedData(env, cacheKey, responseBody, ttl);
+    }
+
     return new Response(responseBody, {
       status: n8nRes.status,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'X-Cache': 'MISS',
       },
     });
   } catch (err) {
@@ -155,6 +240,19 @@ orderStatus.get('/purchase-ranking', async (c) => {
       year = (yearNum + 543).toString();
     }
 
+    // Check cache
+    const cacheKey = `ranking_purchase_${year}_${month}`;
+    const cachedData = await getCachedData(env, cacheKey);
+    if (cachedData) {
+      return new Response(cachedData, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'X-Cache': 'HIT',
+        },
+      });
+    }
+
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
     const responseText = await n8nRes.text();
 
@@ -170,10 +268,17 @@ orderStatus.get('/purchase-ranking', async (c) => {
       }
     }
 
+    // Cache the response if fetch succeeded (HTTP 200)
+    if (n8nRes.ok) {
+      const ttl = getRankingCacheTtl(year, month);
+      await setCachedData(env, cacheKey, responseBody, ttl);
+    }
+
     return new Response(responseBody, {
       status: n8nRes.status,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'X-Cache': 'MISS',
       },
     });
   } catch (err) {
