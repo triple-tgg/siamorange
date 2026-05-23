@@ -331,8 +331,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   }
 
-  // Affiliate code from query string
-  const affCode = getQueryParam('aff');
+  // Affiliate code from query string OR saved cookie
+  const affCode = getQueryParam('aff') || UserSession.getAffCode() || '';
   const affInput = document.getElementById('qs_aff');
   if (affInput && affCode) {
     affInput.value = affCode;
