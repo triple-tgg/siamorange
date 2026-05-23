@@ -103,10 +103,22 @@ orderStatus.get('/affiliate-ranking', async (c) => {
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
     const responseText = await n8nRes.text();
 
-    return new Response(responseText, {
+    // Validate response body - fallback to empty array if empty or invalid JSON
+    let responseBody = responseText;
+    if (!responseText || responseText.trim() === '') {
+      responseBody = '[]';
+    } else {
+      try {
+        JSON.parse(responseText);
+      } catch (_) {
+        responseBody = '[]';
+      }
+    }
+
+    return new Response(responseBody, {
       status: n8nRes.status,
       headers: {
-        'Content-Type': n8nRes.headers.get('Content-Type') || 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
       },
     });
   } catch (err) {
@@ -134,10 +146,22 @@ orderStatus.get('/purchase-ranking', async (c) => {
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
     const responseText = await n8nRes.text();
 
-    return new Response(responseText, {
+    // Validate response body - fallback to empty array if empty or invalid JSON
+    let responseBody = responseText;
+    if (!responseText || responseText.trim() === '') {
+      responseBody = '[]';
+    } else {
+      try {
+        JSON.parse(responseText);
+      } catch (_) {
+        responseBody = '[]';
+      }
+    }
+
+    return new Response(responseBody, {
       status: n8nRes.status,
       headers: {
-        'Content-Type': n8nRes.headers.get('Content-Type') || 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
       },
     });
   } catch (err) {
