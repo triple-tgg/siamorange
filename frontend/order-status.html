@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Siam Orange — ตรวจสอบสถานะคำสั่งซื้อ</title>
+  <meta name="description" content="ตรวจสอบสถานะคำสั่งซื้อ Siam Orange ด้วยเบอร์โทรศัพท์" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="/public/img/favicon.ico">
+  <style>
+    body { font-family: 'Prompt', Arial, sans-serif; background: #fffdfa; margin: 0; padding: 0; }
+    .container { max-width: 480px; margin: 32px auto; background: #fff; border-radius: 16px; box-shadow: 0 2px 16px #ffa50022; padding: 24px 18px; }
+    h2 { color: #e67e22; margin-bottom: 18px; }
+    label { display: block; margin-bottom: 10px; font-weight: 500; }
+    input[type="tel"] { width: 90%; padding: 12px; border: 2px solid #ffa500; border-radius: 8px; font-size: 1.1rem; margin-bottom: 12px; background: #fffdfa; }
+    button { background: #ffa500; color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    button:active { background: #e67e22; }
+    .order-list { margin-top: 24px; }
+    .not-found { color: #dc3545; margin-top: 18px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="logo-section" style="text-align:center;margin:20px auto;max-width:500px;">
+    <img src="/public/img/banner01.jpg?v=2" alt="Siam Orange Banner" width="100%" height="auto">
+  </div>
+  <div class="container">
+    <h2>🔎 ตรวจสอบสถานะคำสั่งซื้อ</h2>
+    <form id="queryForm" autocomplete="off">
+      <label for="phone">📞 กรอกเบอร์โทรศัพท์ที่ใช้สั่งซื้อ</label>
+      <input type="tel" id="phone" name="phone" pattern="^[0-9]{10}$" maxlength="10" inputmode="numeric" required placeholder="เช่น 0812345678">
+      <button type="submit">ค้นหารายการ</button>
+    </form>
+    <div id="orderResults" class="order-list"></div>
+  </div>
+
+  <script type="module">
+    import { getOrderStatus } from '/src/js/api-client.js';
+
+    document.getElementById('queryForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const mobile = document.getElementById('phone').value.trim();
+      if (!/^\d{10}$/.test(mobile)) {
+        alert('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก');
+        return;
+      }
+
+      const resultsDiv = document.getElementById('orderResults');
+      resultsDiv.innerHTML = '<div style="text-align:center;color:#e67e22;margin:18px 0;">⏳ กำลังค้นหา...</div>';
+
+      try {
+        const result = await getOrderStatus(mobile);
+
+        if (result.type === 'none' || !result.orders || result.orders.length === 0) {
+          resultsDiv.innerHTML = '<div class="not-found">ไม่พบรายการสั่งซื้อสำหรับเบอร์นี้</div>';
+          return;
+        }
+
+        const data = result.orders;
+
+        resultsDiv.innerHTML = `
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:1.05em;background:#fffdfa;">
+              <thead>
+                <tr style="background:#ffe5b4;color:#e67e22;">
+                  <th style="padding:8px 4px;border-bottom:2px solid #ffa500;">วันที่สั่งซื้อ</th>
+                  <th style="padding:8px 4px;border-bottom:2px solid #ffa500;">ยอดเงิน</th>
+                  <th style="padding:8px 4px;border-bottom:2px solid #ffa500;">สถานะ</th>
+                  <th style="padding:8px 4px;border-bottom:2px solid #ffa500;">รหัสแนะนำ</th>
+                  <th style="padding:8px 4px;border-bottom:2px solid #ffa500;">เลขที่คำสั่งซื้อ</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${data.slice().reverse().map(order => `
+                  <tr style="border-bottom:1px solid #ffa50022;">
+                    <td style="padding:8px 4px;color:#d35400;font-size:0.75em;">${order.order_date || '-'}</td>
+                    <td style="padding:8px 4px;color:#d35400;font-size:0.75em;">฿${Number(order.order_total).toLocaleString('th-TH')}</td>
+                    <td style="padding:8px 4px;color:#d35400;font-size:0.75em;">${order.order_progress ? (order.order_progress.substring(2).trim() === 'delivered' ? 'จัดส่งสำเร็จ' : order.order_progress.substring(2)) : 'รอดำเนินการ'}</td>
+                    <td style="padding:8px 4px;color:#d35400;font-size:0.75em;">${order.AFF_code || '-'}</td>
+                    <td style="padding:8px 4px;color:#d35400;font-size:0.75em;">${order.order_id}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="not-found">เกิดข้อผิดพลาดในการดึงข้อมูล กรุณาลองใหม่</div>';
+      }
+    });
+  </script>
+</body>
+</html>

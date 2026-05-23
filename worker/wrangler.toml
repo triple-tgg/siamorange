@@ -1,0 +1,39 @@
+name = "siamorange-api"
+main = "src/index.js"
+compatibility_date = "2025-05-01"
+
+# --- Production (default) ---
+[vars]
+ENVIRONMENT = "production"
+ALLOWED_ORIGINS = "https://order.siamorange.com"
+
+# KV Namespace bindings (replace IDs after creating via wrangler)
+# [[kv_namespaces]]
+# binding = "PRODUCTS_KV"
+# id = "<PRODUCTION_KV_ID>"
+
+# R2 Bucket binding
+# [[r2_buckets]]
+# binding = "SLIPS_BUCKET"
+# bucket_name = "siamorange-slips"
+
+# Secrets (set via `wrangler secret put <NAME>`):
+# N8N_ORDER_WEBHOOK
+# N8N_MEMBER_WEBHOOK
+# N8N_MEMBER_CHECK_WEBHOOK
+# N8N_MYPURCHASE_WEBHOOK
+# N8N_AFFPURCHASE_WEBHOOK
+# N8N_LINE_MESSAGE_WEBHOOK
+
+# --- Staging ---
+[env.staging]
+name = "siamorange-api-staging"
+[env.staging.vars]
+ENVIRONMENT = "staging"
+ALLOWED_ORIGINS = "https://staging.order.siamorange.com,https://siamorange-order.pages.dev"
+
+# [env.staging.kv_namespaces]
+# ...
+
+# [env.staging.r2_buckets]
+# ...

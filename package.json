@@ -1,0 +1,14 @@
+{
+  "name": "siamorange-v2",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Siam Orange Order System V2 — Cloudflare Workers + Pages",
+  "scripts": {
+    "dev:worker": "cd worker && npx wrangler dev",
+    "dev:frontend": "cd frontend && npx wrangler pages dev ./",
+    "deploy:worker": "cd worker && npx wrangler deploy",
+    "deploy:frontend": "cd frontend && npx wrangler pages deploy ./",
+    "deploy:worker:staging": "cd worker && npx wrangler deploy --env staging",
+    "seed:kv": "node scripts/seed-kv.js"
+  }
+}

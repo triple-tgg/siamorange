@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siam Orange — ลงทะเบียนสมาชิก</title>
+    <meta name="description" content="ลงทะเบียนสมาชิก Siam Orange เพื่อสั่งซื้อน้ำส้มคั้นสด" />
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/src/css/site.css">
+    <link rel="stylesheet" href="/src/css/styles.css">
+    <link rel="stylesheet" href="/src/css/thai-address.css">
+    <link rel="icon" type="image/x-icon" href="/public/img/favicon.ico">
+    <script type="module" src="/src/js/session.js"></script>
+</head>
+<body>
+    <!-- Logo Section -->
+    <div class="logo-section" style="text-align:center;margin:20px auto;max-width:500px;">
+        <img src="/public/img/banner01.jpg?v=2" alt="Siam Orange Banner" width="100%" height="auto">
+    </div>
+
+    <div class="form-container">
+        <h2>📍 ที่อยู่จัดส่ง</h2>
+        <form id="memberForm" method="POST" enctype="multipart/form-data">
+            <label>🔤 ชื่อ-นามสกุล<br>
+                <input type="text" name="customer_name" required>
+            </label>
+            <label>📞 เบอร์โทรติดต่อ<br>
+                <input type="tel" name="phone" pattern="^[0-9]{10}$" maxlength="10" inputmode="numeric" required
+                    oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)">
+            </label>
+            <label>🏠 ที่อยู่ (บ้านเลขที่, หมู่, ถนน)<br>
+                <input type="text" name="address_detail" required>
+            </label>
+            <div class="form-group">
+                <label for="subdistrict">🏘️ ตำบล/แขวง</label>
+                <input type="text" id="subdistrict" name="subdistrict" placeholder="พิมพ์ชื่อตำบล..." autocomplete="off">
+                <div class="suggestions" id="suggestions"></div>
+            </div>
+            <div class="form-group">
+                <label for="district">🏙️ อำเภอ/เขต</label>
+                <input type="text" id="district" name="district" readonly>
+            </div>
+            <div class="form-group">
+                <label for="province">🌆 จังหวัด</label>
+                <input type="text" id="province" name="province" readonly>
+            </div>
+            <div class="form-group">
+                <label for="zipcode">📮 รหัสไปรษณีย์</label>
+                <input type="text" id="zipcode" name="zipcode" readonly>
+            </div>
+            <label>📝 หมายเหตุ (ถ้ามี)<br>
+                <textarea name="notes" rows="3"></textarea>
+            </label>
+            <div class="form-group">
+                <label for="aff_code">รหัสแนะนำ(ถ้ามี)</label>
+                <input type="text" id="aff_code" name="aff_code" placeholder="ระบุรหัสแนะนำ">
+            </div>
+            <div class="field checkbox" style="margin-top: 1em; display: flex; align-items: center; gap: 0.5em;">
+                <input type="checkbox" id="accept_terms" name="accept_terms" style="margin: 5px 0px 0px 0px" required>
+                <label for="accept_terms">
+                    ฉันได้อ่านและยอมรับ
+                    <a href="terms.html" target="_blank" rel="noopener noreferrer">เงื่อนไขการให้บริการ</a>
+                </label>
+            </div>
+            <button id="member_submit" type="submit" class="submit-button">บันทึกที่อยู่จัดส่ง</button>
+        </form>
+
+        <script src="/src/data/thai-address-data.js"></script>
+        <script src="/src/js/thai-address.js"></script>
+        <script type="module">
+          import { registerMember } from '/src/js/api-client.js';
+          import { UserSession } from '/src/js/session.js';
+
+          document.addEventListener('DOMContentLoaded', () => {
+            if (typeof ThaiAddressAutocomplete !== 'undefined') {
+              new ThaiAddressAutocomplete({
+                subdistrictInput: document.getElementById('subdistrict'),
+                districtInput: document.getElementById('district'),
+                provinceInput: document.getElementById('province'),
+                zipcodeInput: document.getElementById('zipcode'),
+                suggestionsDiv: document.getElementById('suggestions')
+              });
+            }
+          });
+
+          document.getElementById('memberForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fd = new FormData(e.target);
+            const data = {
+              uuid: UserSession.get(),
+              line_uuid: UserSession.getLineID(),
+              name: fd.get('customer_name'),
+              phone: fd.get('phone'),
+              address: fd.get('address_detail'),
+              subdistrict: fd.get('subdistrict'),
+              district: fd.get('district'),
+              province: fd.get('province'),
+              zipcode: fd.get('zipcode'),
+              notes: fd.get('notes'),
+              affcode: UserSession.getAffCode() || fd.get('aff_code') || '',
+            };
+
+            const submitBtn = document.getElementById('member_submit');
+            if (submitBtn) {
+              submitBtn.innerHTML = '⏳ กำลังบันทึก...';
+              submitBtn.disabled = true;
+            }
+
+            try {
+              await registerMember(data);
+              window.location.href = 'index.html';
+            } catch (error) {
+              alert('❌ เกิดข้อผิดพลาด: ' + error.message);
+              if (submitBtn) {
+                submitBtn.innerHTML = 'บันทึกที่อยู่จัดส่ง';
+                submitBtn.disabled = false;
+              }
+            }
+          });
+        </script>
+    </div>
+</body>
+</html>

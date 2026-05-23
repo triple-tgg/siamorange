@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Siam Orange Purchase Ranking</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/site.css" />
+    <link rel="stylesheet" href="styles/styles.css" />
+    <link rel="stylesheet" href="styles/thai-address.css" />
+    <link rel="stylesheet" href="styles/month-calendar.css" />
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+    <script src="scripts/persistent.js"></script>
+    <style>
+      body {
+          margin: 20px;
+          background-color: #f9f9f9;
+        }
+      @media (max-width: 600px) {
+        body {
+          font-size: 12px;
+        }
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        font-weight: 500;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      tbody tr:hover {
+        background-color: #f1f1f1;
+      }
+      em {
+        font-size: 0.8em;
+        color: orangered;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Logo Section -->
+    <div
+      class="logo-section"
+      style="text-align: center; margin: 20px auto; max-width: 500px"
+
+    >
+      <img
+        src="/img/banner01.jpg?v=20250906-2"
+        alt="Siam Orange Banner"
+        width="100%"
+        height="auto"
+      />
+    </div>
+    <div class="form-container">
+      <h2 style="text-align: center">รายงานยอดซื้อ/ยอดขายประจำเดือน</h2>
+      <div class="month-calendar-container">
+        <input
+          type="text"
+          class="picker-input text-only"
+          id="pickerInput"
+          style="text-align: center; font-weight: 500; font-size: 2rem"
+          readonly
+          placeholder="เลือกเดือน"
+        />
+        <div class="picker-dropdown" id="pickerDropdown">
+          <div class="picker-header">
+            <button id="prevYear">←</button>
+            <span id="currentYear"></span>
+            <button id="nextYear">→</button>
+          </div>
+          <div class="months-grid" id="monthsGrid"></div>
+        </div>
+      </div>
+      <!-- </div>
+    <div class="form-container"> -->
+      <div>
+        <h2>🏆 Sale Team Ranking</h2>
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>ยอดขาย(บาท)</th>
+              <th>คอมมิชชั่น(บาท)</th>
+            </tr>
+          </thead>
+          <tbody id="rankingBody">
+            <tr>
+              <td colspan="4">เลือกเดือนเพื่อดูข้อมูล</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- </div>
+    <div class="form-container"> -->
+      <div style="margin-top: 50px">
+        <h2>🏆 อันดับยอดซื้อ Top 20</h2>
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>อันดับ</th>
+              <th>เบอร์โทร</th>
+              <th>ชื่อ-นามสกุล</th>
+              <th>ยอดซื้อ(บาท)</th>
+            </tr>
+          </thead>
+          <tbody id="purcRankingBody">
+            <tr>
+              <td colspan="4">เลือกเดือนเพื่อดูข้อมูล</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      const formatter = new Intl.NumberFormat("en-US");
+      const formatter2 = new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+
+      function maskPhoneNumber(phoneNumber) {
+        const maskDigit = 3;
+        const length = phoneNumber.length;
+
+        if (length <= maskDigit) {
+          return phoneNumber; // If it's too short, don't mask
+        }
+
+        // Calculate how many characters need to be masked
+        const maskedLength = length - maskDigit;
+
+        // Create the mask string
+        const mask = "*".repeat(maskDigit);
+
+        // Get the last four characters
+        const visiblePart = phoneNumber.slice(0, maskedLength);
+
+        // Combine the mask and the visible part
+        return visiblePart + mask;
+      }
+
+      function maskName(text) {
+        const visibleDigits = 6;
+        const length = text.length;
+
+        if (length <= visibleDigits) {
+          return text; // If it's too short, don't mask
+        }
+
+        // Calculate how many characters need to be masked
+        const maskedLength = length - visibleDigits;
+
+        // Create the mask string
+        const mask = "x".repeat(4);
+
+        // Get the last characters
+        const visiblePart = text.slice(0, visibleDigits);
+
+        // Combine the mask and the visible part
+        return visiblePart + mask;
+      }
+
+      function getAffiliateRanking(year, month) {
+        const rankingBody = document.getElementById("rankingBody");
+        rankingBody.innerHTML =
+          '<tr><td colspan="4">กำลังโหลดข้อมูล...</td></tr>';
+
+        // Fetch ranking data from the server
+        // fetch(
+        //   `https://primary-production-f112.up.railway.app/webhook/b02874c2-1ff0-48c4-8d82-cf37722bbc79?y=${year}&m=${month}`
+        // )
+        fetch(
+          `https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2?y=${year}&m=${month}` // Production Siam Orange
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            rankingBody.innerHTML = "";
+
+            if (data.length == 0)
+              rankingBody.innerHTML =
+                '<tr><td colspan="4">ไม่มีข้อมูล</td></tr>';
+
+            data.forEach((item, index) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                            <td class='rank-${index + 1}'>${index + 1}</td>
+                            <td>${item.name}</td>
+                            <td>${formatter.format(item.total)}</td>
+                            <td>${formatter2.format(item.comm)} <em>(${
+                item.rate
+              }%)</em></td>
+                        `;
+              rankingBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching ranking data:", error);
+            rankingBody.innerHTML =
+              '<tr><td colspan="4">ไม่สามารถโหลดข้อมูลได้ในขณะนี้</td></tr>';
+          });
+      }
+
+      function getPurchaseRanking(year, month) {
+        const purcRankingBody = document.getElementById("purcRankingBody");
+        purcRankingBody.innerHTML =
+          '<tr><td colspan="4">กำลังโหลดข้อมูล...</td></tr>';
+
+        // Fetch ranking data from the server
+        // fetch(
+        //   `https://primary-production-f112.up.railway.app/webhook/e98bfd56-3304-41d7-9b8b-4622e47d5634?y=${year}&m=${month}`
+        // )
+        fetch(
+          `https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7?y=${year}&m=${month}` // Production Siam Orange
+        )
+
+          .then((response) => response.json())
+          .then((data) => {
+            purcRankingBody.innerHTML = "";
+            if (data.length == 0)
+              purcRankingBody.innerHTML =
+                '<tr><td colspan="4">ไม่มีข้อมูล</td></tr>';
+
+            data.forEach((item, index) => {
+              if (index > 19) return;
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                            <td class='rank-${index + 1}'>${index + 1}</td>
+                            <td>${maskPhoneNumber(item.phone)}</td>
+                            <td>${maskName(item.name)}</td>
+                            <td>${formatter.format(item.total)}</td>
+                        `;
+              purcRankingBody.appendChild(row);
+            });
+          })
+          .catch((error) => {
+            console.error("Error fetching ranking data:", error);
+            purcRankingBody.innerHTML =
+              '<tr><td colspan="4">ไม่สามารถโหลดข้อมูลได้ในขณะนี้</td></tr>';
+          });
+      }
+
+      function getReport(year, month) {
+        getAffiliateRanking(year, month);
+        getPurchaseRanking(year, month);
+      }
+    </script>
+    <script src="scripts/month-calendar.js"></script>
+  </body>
+</html>
