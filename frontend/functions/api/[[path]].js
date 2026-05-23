@@ -33,7 +33,7 @@ export async function onRequest(context) {
   }
 
   // --- Option B: Direct fetch fallback (uses WORKER_URL env var) ---
-  const workerBase = env.WORKER_URL || 'https://siamorange-api.sothon.workers.dev';
+  const workerBase = env.WORKER_URL || 'https://order.siamorange.com';
   const targetUrl = `${workerBase}${apiPath}${queryString}`;
 
   const proxyRequest = new Request(targetUrl, {
