@@ -7,48 +7,7 @@ import { Hono } from 'hono';
 
 const orderStatus = new Hono();
 
-// --- Best-Effort In-Memory Cache for Rate Limit Prevention ---
-const memoryCache = new Map();
-
-function getMemoryCache(key) {
-  const cached = memoryCache.get(key);
-  if (!cached) return null;
-  if (Date.now() > cached.expiry) {
-    memoryCache.delete(key);
-    return null;
-  }
-  return cached.data;
-}
-
-function setMemoryCache(key, data, ttlSeconds) {
-  memoryCache.set(key, {
-    data,
-    expiry: Date.now() + (ttlSeconds * 1000)
-  });
-}
-
-async function getCachedData(env, key) {
-  if (env.PRODUCTS_KV) {
-    try {
-      const val = await env.PRODUCTS_KV.get(key);
-      if (val) return val;
-    } catch (e) {
-      console.error('KV get error:', e);
-    }
-  }
-  return getMemoryCache(key);
-}
-
-async function setCachedData(env, key, data, ttlSeconds) {
-  if (env.PRODUCTS_KV) {
-    try {
-      await env.PRODUCTS_KV.put(key, data, { expirationTtl: ttlSeconds });
-    } catch (e) {
-      console.error('KV put error:', e);
-    }
-  }
-  setMemoryCache(key, data, ttlSeconds);
-}
+// --- Helper to determine cache TTL based on year/month ---
 
 function getRankingCacheTtl(year, month) {
   // Determine if it is the current month and year
@@ -155,18 +114,6 @@ orderStatus.get('/affiliate-ranking', async (c) => {
   const cache = caches.default;
 
   try {
-    // 1. Try to retrieve from Cloudflare Global Cache Server (CDN)
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-      const newHeaders = new Headers(cachedResponse.headers);
-      newHeaders.set('X-Cache-Server', 'HIT');
-      return new Response(cachedResponse.body, {
-        status: cachedResponse.status,
-        headers: newHeaders,
-      });
-    }
-
-    const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
     let year = c.req.query('y');
     const month = c.req.query('m');
 
@@ -180,6 +127,30 @@ orderStatus.get('/affiliate-ranking', async (c) => {
       year = (yearNum + 543).toString();
     }
 
+    // Determine if it is a past month (cacheable)
+    const now = new Date();
+    const currentYearBE = now.getFullYear() + 543;
+    const currentMonth = now.getMonth() + 1;
+    const reqYear = parseInt(year, 10);
+    const reqMonth = parseInt(month, 10);
+
+    const isPastMonth = !isNaN(reqYear) && !isNaN(reqMonth) && 
+      (reqYear < currentYearBE || (reqYear === currentYearBE && reqMonth < currentMonth));
+
+    // 1. Try to retrieve from Cloudflare CDN Cache Server ONLY if it's a past month
+    if (isPastMonth) {
+      const cachedResponse = await cache.match(request);
+      if (cachedResponse) {
+        const newHeaders = new Headers(cachedResponse.headers);
+        newHeaders.set('X-Cache-Server', 'HIT');
+        return new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          headers: newHeaders,
+        });
+      }
+    }
+
+    const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
     const responseText = await n8nRes.text();
 
@@ -195,18 +166,26 @@ orderStatus.get('/affiliate-ranking', async (c) => {
       }
     }
 
-    const ttl = getRankingCacheTtl(year, month);
+    // Configure headers - Cache past months, Bypass cache for current/future months
+    const headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+    };
+
+    if (isPastMonth) {
+      headers['Cache-Control'] = 'public, max-age=86400'; // Cache for 24 hours on CDN
+      headers['X-Cache-Server'] = 'MISS';
+    } else {
+      headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'; // Always fetch live
+      headers['X-Cache-Server'] = 'BYPASS';
+    }
+
     const response = new Response(responseBody, {
       status: n8nRes.status,
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': `public, max-age=${ttl}`, // Tell Cloudflare CDN how long to cache
-        'X-Cache-Server': 'MISS',
-      },
+      headers: headers,
     });
 
-    // Store in Cloudflare Cache Server (only successful responses)
-    if (n8nRes.ok) {
+    // Store in Cloudflare CDN Cache only if it's a past month
+    if (n8nRes.ok && isPastMonth) {
       c.executionCtx.waitUntil(cache.put(request, response.clone()));
     }
 
@@ -227,18 +206,6 @@ orderStatus.get('/purchase-ranking', async (c) => {
   const cache = caches.default;
 
   try {
-    // 1. Try to retrieve from Cloudflare Global Cache Server (CDN)
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-      const newHeaders = new Headers(cachedResponse.headers);
-      newHeaders.set('X-Cache-Server', 'HIT');
-      return new Response(cachedResponse.body, {
-        status: cachedResponse.status,
-        headers: newHeaders,
-      });
-    }
-
-    const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
     let year = c.req.query('y');
     const month = c.req.query('m');
 
@@ -252,6 +219,30 @@ orderStatus.get('/purchase-ranking', async (c) => {
       year = (yearNum + 543).toString();
     }
 
+    // Determine if it is a past month (cacheable)
+    const now = new Date();
+    const currentYearBE = now.getFullYear() + 543;
+    const currentMonth = now.getMonth() + 1;
+    const reqYear = parseInt(year, 10);
+    const reqMonth = parseInt(month, 10);
+
+    const isPastMonth = !isNaN(reqYear) && !isNaN(reqMonth) && 
+      (reqYear < currentYearBE || (reqYear === currentYearBE && reqMonth < currentMonth));
+
+    // 1. Try to retrieve from Cloudflare CDN Cache Server ONLY if it's a past month
+    if (isPastMonth) {
+      const cachedResponse = await cache.match(request);
+      if (cachedResponse) {
+        const newHeaders = new Headers(cachedResponse.headers);
+        newHeaders.set('X-Cache-Server', 'HIT');
+        return new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          headers: newHeaders,
+        });
+      }
+    }
+
+    const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
     const responseText = await n8nRes.text();
 
@@ -267,18 +258,26 @@ orderStatus.get('/purchase-ranking', async (c) => {
       }
     }
 
-    const ttl = getRankingCacheTtl(year, month);
+    // Configure headers - Cache past months, Bypass cache for current/future months
+    const headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+    };
+
+    if (isPastMonth) {
+      headers['Cache-Control'] = 'public, max-age=86400'; // Cache for 24 hours on CDN
+      headers['X-Cache-Server'] = 'MISS';
+    } else {
+      headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'; // Always fetch live
+      headers['X-Cache-Server'] = 'BYPASS';
+    }
+
     const response = new Response(responseBody, {
       status: n8nRes.status,
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': `public, max-age=${ttl}`, // Tell Cloudflare CDN how long to cache
-        'X-Cache-Server': 'MISS',
-      },
+      headers: headers,
     });
 
-    // Store in Cloudflare Cache Server (only successful responses)
-    if (n8nRes.ok) {
+    // Store in Cloudflare CDN Cache only if it's a past month
+    if (n8nRes.ok && isPastMonth) {
       c.executionCtx.waitUntil(cache.put(request, response.clone()));
     }
 
