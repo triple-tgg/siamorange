@@ -93,11 +93,17 @@ orderStatus.get('/affiliate-ranking', async (c) => {
   const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
 
   try {
-    const year = c.req.query('y');
+    let year = c.req.query('y');
     const month = c.req.query('m');
 
     if (!year || !month) {
       return c.json({ error: 'Missing year or month' }, 400);
+    }
+
+    // Auto-convert Gregorian year (e.g., 2026) to Thai Buddhist Era (พ.ศ., e.g., 2569)
+    const yearNum = parseInt(year, 10);
+    if (!isNaN(yearNum) && yearNum < 2500) {
+      year = (yearNum + 543).toString();
     }
 
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
@@ -136,11 +142,17 @@ orderStatus.get('/purchase-ranking', async (c) => {
   const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
 
   try {
-    const year = c.req.query('y');
+    let year = c.req.query('y');
     const month = c.req.query('m');
 
     if (!year || !month) {
       return c.json({ error: 'Missing year or month' }, 400);
+    }
+
+    // Auto-convert Gregorian year (e.g., 2026) to Thai Buddhist Era (พ.ศ., e.g., 2569)
+    const yearNum = parseInt(year, 10);
+    if (!isNaN(yearNum) && yearNum < 2500) {
+      year = (yearNum + 543).toString();
     }
 
     const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
