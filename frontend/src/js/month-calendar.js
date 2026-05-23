@@ -83,9 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Close dropdown
         pickerDropdown.classList.remove('active');
 
-        // Trigger report fetch
+        // Trigger report fetch with Thai Year (พ.ศ.)
         if (typeof getReport === 'function') {
-          getReport(selectedYear, selectedMonth);
+          getReport(selectedYear + 543, selectedMonth);
         }
       });
 
@@ -99,8 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set initial input value
   pickerInput.value = `${thaiMonths[selectedMonth - 1]} ${selectedYear + 543}`;
 
-  // Auto-fetch report on load
+  // Auto-fetch report on load with Thai Year (พ.ศ.)
   if (typeof getReport === 'function') {
-    getReport(selectedYear, selectedMonth);
+    getReport(selectedYear + 543, selectedMonth);
   }
 });
