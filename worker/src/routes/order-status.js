@@ -84,4 +84,66 @@ orderStatus.post('/aff-purchases', async (c) => {
   }
 });
 
+/**
+ * Get affiliate ranking by year and month
+ * GET /api/orders/affiliate-ranking
+ */
+orderStatus.get('/affiliate-ranking', async (c) => {
+  const env = c.env;
+  const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
+
+  try {
+    const year = c.req.query('y');
+    const month = c.req.query('m');
+
+    if (!year || !month) {
+      return c.json({ error: 'Missing year or month' }, 400);
+    }
+
+    const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
+    const responseText = await n8nRes.text();
+
+    return new Response(responseText, {
+      status: n8nRes.status,
+      headers: {
+        'Content-Type': n8nRes.headers.get('Content-Type') || 'application/json',
+      },
+    });
+  } catch (err) {
+    console.error('Affiliate ranking error:', err);
+    return c.json({ error: 'Failed to fetch affiliate ranking' }, 500);
+  }
+});
+
+/**
+ * Get purchase ranking by year and month
+ * GET /api/orders/purchase-ranking
+ */
+orderStatus.get('/purchase-ranking', async (c) => {
+  const env = c.env;
+  const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
+
+  try {
+    const year = c.req.query('y');
+    const month = c.req.query('m');
+
+    if (!year || !month) {
+      return c.json({ error: 'Missing year or month' }, 400);
+    }
+
+    const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
+    const responseText = await n8nRes.text();
+
+    return new Response(responseText, {
+      status: n8nRes.status,
+      headers: {
+        'Content-Type': n8nRes.headers.get('Content-Type') || 'application/json',
+      },
+    });
+  } catch (err) {
+    console.error('Purchase ranking error:', err);
+    return c.json({ error: 'Failed to fetch purchase ranking' }, 500);
+  }
+});
+
 export default orderStatus;
