@@ -81,7 +81,7 @@ export const UserSession = {
   },
 
   setAffCode(affCode) {
-    setCookie('aff_code', affCode, 30, { sameSite: 'Strict' });
+    setCookie('aff_code', affCode, 365, { sameSite: 'Strict' });
   },
 
   getAffCode() {
