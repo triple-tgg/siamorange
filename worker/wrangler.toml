@@ -1,11 +1,12 @@
 name = "siamorange-api"
 main = "src/index.js"
 compatibility_date = "2025-05-01"
+account_id = "0245dec85a4fcfe6df98fa9315b5ae76"
 
 # --- Production (default) ---
 [vars]
 ENVIRONMENT = "production"
-ALLOWED_ORIGINS = "https://order.siamorange.com"
+ALLOWED_ORIGINS = "https://order.siamorange.com,https://siamorange-api.sothon.workers.dev"
 
 # KV Namespace bindings (replace IDs after creating via wrangler)
 # [[kv_namespaces]]

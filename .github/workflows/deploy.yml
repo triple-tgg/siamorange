@@ -1,0 +1,68 @@
+name: Deploy Worker & Frontend
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+jobs:
+  # ─── Run Tests ──────────────────────────────────
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: worker/package-lock.json
+
+      - name: Install dependencies
+        run: cd worker && npm ci
+
+      - name: Run tests
+        run: cd worker && npm test
+
+  # ─── Deploy Worker API ─────────────────────────
+  deploy-worker:
+    name: Deploy Worker API
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: worker/package-lock.json
+
+      - name: Install dependencies
+        run: cd worker && npm ci
+
+      - name: Deploy to Cloudflare Workers
+        run: cd worker && npx wrangler deploy --env=""
+
+  # ─── Deploy Frontend (Pages) ───────────────────
+  deploy-frontend:
+    name: Deploy Frontend
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Deploy to Cloudflare Pages
+        run: cd frontend && npx wrangler pages deploy ./ --project-name=siamorange-order --branch=main
