@@ -446,10 +446,14 @@
       }
 
       for (const [key, p] of Object.entries(productCatalog)) {
-        // Normalize image path: prepend /public if path starts with /product/
+        // Normalize image path: support all variations of incorrect /product/ paths
         let imgPath = p.image || '';
-        if (imgPath.startsWith('/product/')) {
+        if (imgPath.startsWith('product/')) {
+          imgPath = '/public/' + imgPath;
+        } else if (imgPath.startsWith('/product/')) {
           imgPath = '/public' + imgPath;
+        } else if (imgPath.includes('/product/') && !imgPath.includes('/public/product/')) {
+          imgPath = imgPath.replace('/product/', '/public/product/');
         }
 
         const card = document.createElement('div');

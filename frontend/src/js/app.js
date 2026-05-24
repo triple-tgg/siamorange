@@ -152,10 +152,14 @@ function renderProducts(dataObj) {
   const render = (str, map) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? '');
 
   for (const [code, p] of Object.entries(dataObj)) {
-    // Normalize image path: prepend /public if path starts with /product/
+    // Normalize image path: support all variations of incorrect /product/ paths
     let imgPath = p.image || '';
-    if (imgPath.startsWith('/product/')) {
+    if (imgPath.startsWith('product/')) {
+      imgPath = '/public/' + imgPath;
+    } else if (imgPath.startsWith('/product/')) {
       imgPath = '/public' + imgPath;
+    } else if (imgPath.includes('/product/') && !imgPath.includes('/public/product/')) {
+      imgPath = imgPath.replace('/product/', '/public/product/');
     }
 
     const map = {
