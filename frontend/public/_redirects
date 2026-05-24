@@ -1,1 +1,2 @@
-/index.html / 301
+# Redirect rules are handled programmatically in frontend/functions/index.html.js
+# to ensure query parameters (like ?aff=XYZ) are perfectly preserved.
