@@ -181,17 +181,6 @@ function renderProducts(dataObj) {
       wrapOther.insertAdjacentHTML('beforeend', render(tpl, map));
     }
   }
-
-  // Disable retail (non-pc_) product cards — display only, no purchasing
-  document.querySelectorAll('#product_gallery_other .product-card').forEach(card => {
-    card.style.opacity = '0.65';
-    card.style.pointerEvents = 'none';
-    card.style.cursor = 'not-allowed';
-    const ctrl = card.querySelector('.quantity-controls');
-    if (ctrl) {
-      ctrl.outerHTML = '<div style="margin:12px auto 0 auto;color:#95a5a6;font-weight:bold;font-size:13px;border:1px solid #bdc3c7;padding:6px 8px;border-radius:4px;background:#ecf0f1;user-select:none;">งดจำหน่ายปลีกชั่วคราว</div>';
-    }
-  });
 }
 
 // === FORM SUBMISSION ===
