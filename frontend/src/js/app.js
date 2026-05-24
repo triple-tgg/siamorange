@@ -247,7 +247,7 @@ async function handleOrderSubmit(e) {
     order_id: newOrderId(),
     order_date: new Date().toLocaleString('th-TH'),
     aff_code: fd.get('qs_aff') || '',
-    referral_link: (fd.get('qs_aff') || '') ? `https://line.siamorange.com/?aff=${fd.get('qs_aff')}` : '',
+    ref_link: (fd.get('qs_aff') || '') ? `https://line.siamorange.com/?aff=${fd.get('qs_aff')}` : 'https://line.siamorange.com/',
     note: (fd.get('note') || '').trim(),
     name: fd.get('customer_name') || '',
     phone: fd.get('phone') || '',
