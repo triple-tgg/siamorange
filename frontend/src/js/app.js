@@ -144,6 +144,10 @@ function renderProducts(dataObj) {
 
   if (!wrapPc || !wrapOther || !tplEl) return;
 
+  // Clear previous cards to avoid duplicates when loading from API
+  wrapPc.innerHTML = '';
+  wrapOther.innerHTML = '';
+
   const tpl = tplEl.textContent.trim();
   const render = (str, map) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? '');
 
@@ -289,19 +293,17 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Load shipping rules
   await loadShippingRules();
 
-  // Try to load products from API, fallback to inline data
+  // Try to load products from API, fallback to inline HTML data
   try {
+    productCatalog = await getProducts();
+    renderProducts(productCatalog);
+  } catch (err) {
+    console.warn('Failed to load products from API, falling back to inline data:', err);
     const productsDataEl = document.getElementById('productsData');
     if (productsDataEl) {
-      // Use inline data (already in HTML)
       productCatalog = JSON.parse(productsDataEl.textContent.trim());
-    } else {
-      // Fetch from API
-      productCatalog = await getProducts();
-      renderProducts(productCatalog);
+      // No need to render since inline script already rendered it
     }
-  } catch (err) {
-    console.error('Failed to load products:', err);
   }
 
   // Set minimum date to today

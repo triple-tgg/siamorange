@@ -174,4 +174,32 @@ products.get('/', async (c) => {
   });
 });
 
+/**
+ * POST /api/products — Save product catalog to KV
+ */
+products.post('/', async (c) => {
+  const env = c.env;
+
+  if (!env.PRODUCTS_KV) {
+    return c.json({ error: 'KV namespace PRODUCTS_KV is not bound in wrangler.toml' }, 500);
+  }
+
+  try {
+    const updatedCatalog = await c.req.json();
+    
+    // Validate that it's a valid object
+    if (!updatedCatalog || typeof updatedCatalog !== 'object' || Array.isArray(updatedCatalog)) {
+      return c.json({ error: 'Invalid product catalog format' }, 400);
+    }
+
+    // Save to KV
+    await env.PRODUCTS_KV.put('products:catalog', JSON.stringify(updatedCatalog));
+
+    return c.json({ success: true, message: 'Product catalog updated successfully' });
+  } catch (err) {
+    console.error('Failed to save products to KV:', err);
+    return c.json({ error: 'Failed to update product catalog', detail: err.message }, 500);
+  }
+});
+
 export default products;
