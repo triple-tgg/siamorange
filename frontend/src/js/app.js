@@ -115,6 +115,10 @@ function updateProductCards() {
 function setupProductCards() {
   document.querySelectorAll('.product-card').forEach(card => {
     const key = card.dataset.product;
+
+    // Skip retail (non-pc_) products — they are disabled for purchasing
+    if (!key || !key.startsWith('pc_')) return;
+
     const price = Number(card.dataset.price) || 0;
     const name = card.dataset.label || (card.querySelector('div')?.textContent || key).trim();
 
