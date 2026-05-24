@@ -46,8 +46,8 @@ export function calculateShippingDistrictFee(district, cart) {
 
   if (keys.length === 0) return 0;
 
-  // Special: pc_ items always free shipping
-  if (rules.pcFreeShipping && now <= specialEnd && keys.every(code => code.startsWith('pc_')) && total > 0) {
+  // Special: pc_ items always free shipping (unconditional — not tied to specialEndDate)
+  if (rules.pcFreeShipping && keys.every(code => code.startsWith('pc_')) && total > 0) {
     return 0;
   }
 
@@ -109,7 +109,7 @@ export function showShippingInfoByDistrict(district, province, cart, showPopup) 
  */
 function getFallbackRules() {
   return {
-    specialEndDate: "2025-12-31T23:59:59",
+    specialEndDate: "2026-12-31T23:59:59",
     pcFreeShipping: true,
     defaultFee: 300,
     zones: {

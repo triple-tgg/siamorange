@@ -23,6 +23,32 @@
     
     <!-- V2: ES Module scripts -->
     <script type="module" src="/src/js/session.js"></script>
+
+    <!-- Disable retail (non-pc_) product purchasing via CSS -->
+    <style>
+      #product_gallery_other .product-card {
+        opacity: 0.65;
+        pointer-events: none;
+        cursor: not-allowed;
+        position: relative;
+      }
+      #product_gallery_other .quantity-controls {
+        display: none;
+      }
+      #product_gallery_other .product-card::after {
+        content: "งดจำหน่ายปลีกชั่วคราว";
+        display: block;
+        margin: 12px auto 0 auto;
+        color: #95a5a6;
+        font-weight: bold;
+        font-size: 13px;
+        border: 1px solid #bdc3c7;
+        padding: 6px 8px;
+        border-radius: 4px;
+        background: #ecf0f1;
+        user-select: none;
+      }
+    </style>
   </head>
 
   <body>
