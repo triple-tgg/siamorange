@@ -9,12 +9,12 @@
       href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles/site.css" />
-    <link rel="stylesheet" href="styles/styles.css" />
-    <link rel="stylesheet" href="styles/thai-address.css" />
-    <link rel="stylesheet" href="styles/month-calendar.css" />
-    <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
-    <script src="scripts/persistent.js"></script>
+    <link rel="stylesheet" href="/src/css/site.css" />
+    <link rel="stylesheet" href="/src/css/styles.css" />
+    <link rel="stylesheet" href="/src/css/thai-address.css" />
+    <link rel="stylesheet" href="/src/css/month-calendar.css" />
+    <link rel="icon" type="image/x-icon" href="/public/img/favicon.ico" />
+    <script src="/src/js/persistent.js"></script>
     <style>
       body {
           margin: 20px;
@@ -70,7 +70,7 @@
 
     >
       <img
-        src="/img/banner01.jpg?v=20250906-2"
+        src="/public/img/banner01.jpg?v=20250906-2"
         alt="Siam Orange Banner"
         width="100%"
         height="auto"
@@ -192,12 +192,8 @@
         rankingBody.innerHTML =
           '<tr><td colspan="4">กำลังโหลดข้อมูล...</td></tr>';
 
-        // Fetch ranking data from the server
-        // fetch(
-        //   `https://primary-production-f112.up.railway.app/webhook/b02874c2-1ff0-48c4-8d82-cf37722bbc79?y=${year}&m=${month}`
-        // )
         fetch(
-          `https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2?y=${year}&m=${month}` // Production Siam Orange
+          `/api/orders/affiliate-ranking?y=${year}&m=${month}`
         )
           .then((response) => response.json())
           .then((data) => {
@@ -232,12 +228,8 @@
         purcRankingBody.innerHTML =
           '<tr><td colspan="4">กำลังโหลดข้อมูล...</td></tr>';
 
-        // Fetch ranking data from the server
-        // fetch(
-        //   `https://primary-production-f112.up.railway.app/webhook/e98bfd56-3304-41d7-9b8b-4622e47d5634?y=${year}&m=${month}`
-        // )
         fetch(
-          `https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7?y=${year}&m=${month}` // Production Siam Orange
+          `/api/orders/purchase-ranking?y=${year}&m=${month}`
         )
 
           .then((response) => response.json())
@@ -271,6 +263,6 @@
         getPurchaseRanking(year, month);
       }
     </script>
-    <script src="scripts/month-calendar.js"></script>
+    <script src="/src/js/month-calendar.js"></script>
   </body>
 </html>

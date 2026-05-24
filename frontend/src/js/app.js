@@ -229,6 +229,7 @@ async function handleOrderSubmit(e) {
     order_id: newOrderId(),
     order_date: new Date().toLocaleString('th-TH'),
     aff_code: fd.get('qs_aff') || '',
+    referral_link: (fd.get('qs_aff') || '') ? `https://line.siamorange.com/?aff=${fd.get('qs_aff')}` : '',
     note: (fd.get('note') || '').trim(),
     name: fd.get('customer_name') || '',
     phone: fd.get('phone') || '',
@@ -331,8 +332,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   }
 
-  // Affiliate code from query string
-  const affCode = getQueryParam('aff');
+  // Affiliate code from query string OR saved cookie
+  const affCode = getQueryParam('aff') || UserSession.getAffCode() || '';
   const affInput = document.getElementById('qs_aff');
   if (affInput && affCode) {
     affInput.value = affCode;

@@ -7,6 +7,30 @@ import { Hono } from 'hono';
 
 const orderStatus = new Hono();
 
+// --- Helper to determine cache TTL based on year/month ---
+
+function getRankingCacheTtl(year, month) {
+  // Determine if it is the current month and year
+  const now = new Date();
+  const currentYearBE = now.getFullYear() + 543;
+  const currentMonth = now.getMonth() + 1;
+
+  const reqYear = parseInt(year, 10);
+  const reqMonth = parseInt(month, 10);
+
+  if (isNaN(reqYear) || isNaN(reqMonth)) {
+    return 300; // Default 5 mins
+  }
+
+  // If current or future month, cache for 5 minutes (300s)
+  if (reqYear > currentYearBE || (reqYear === currentYearBE && reqMonth >= currentMonth)) {
+    return 300;
+  }
+
+  // If past month, cache for 24 hours (86400s) because past months rankings are static
+  return 86400;
+}
+
 /**
  * Get personal purchase orders by phone
  * POST /api/orders/my-purchases
@@ -81,6 +105,186 @@ orderStatus.post('/aff-purchases', async (c) => {
   } catch (err) {
     console.error('Aff purchases error:', err);
     return c.json({ error: 'Failed to fetch affiliate orders' }, 500);
+  }
+});
+
+orderStatus.get('/affiliate-ranking', async (c) => {
+  const env = c.env;
+  const request = c.req.raw;
+  const cache = caches.default;
+
+  try {
+    let year = c.req.query('y');
+    const month = c.req.query('m');
+
+    if (!year || !month) {
+      return c.json({ error: 'Missing year or month' }, 400);
+    }
+
+    // Auto-convert Gregorian year (e.g., 2026) to Thai Buddhist Era (พ.ศ., e.g., 2569)
+    const yearNum = parseInt(year, 10);
+    if (!isNaN(yearNum) && yearNum < 2500) {
+      year = (yearNum + 543).toString();
+    }
+
+    // Determine if it is a past month (cacheable)
+    const now = new Date();
+    const currentYearBE = now.getFullYear() + 543;
+    const currentMonth = now.getMonth() + 1;
+    const reqYear = parseInt(year, 10);
+    const reqMonth = parseInt(month, 10);
+
+    const isPastMonth = !isNaN(reqYear) && !isNaN(reqMonth) && 
+      (reqYear < currentYearBE || (reqYear === currentYearBE && reqMonth < currentMonth));
+
+    // 1. Try to retrieve from Cloudflare CDN Cache Server ONLY if it's a past month
+    if (isPastMonth) {
+      const cachedResponse = await cache.match(request);
+      if (cachedResponse) {
+        const newHeaders = new Headers(cachedResponse.headers);
+        newHeaders.set('X-Cache-Server', 'HIT');
+        return new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          headers: newHeaders,
+        });
+      }
+    }
+
+    const webhookUrl = env.N8N_AFFILIATE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/fcb23825-3d25-4f98-b502-c51a0bc14ba2';
+    const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
+    const responseText = await n8nRes.text();
+
+    // Validate response body - fallback to empty array if empty or invalid JSON
+    let responseBody = responseText;
+    if (!responseText || responseText.trim() === '') {
+      responseBody = '[]';
+    } else {
+      try {
+        JSON.parse(responseText);
+      } catch (_) {
+        responseBody = '[]';
+      }
+    }
+
+    // Configure headers - Cache past months, Bypass cache for current/future months
+    const headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+    };
+
+    if (isPastMonth) {
+      headers['Cache-Control'] = 'public, max-age=86400'; // Cache for 24 hours on CDN
+      headers['X-Cache-Server'] = 'MISS';
+    } else {
+      headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'; // Always fetch live
+      headers['X-Cache-Server'] = 'BYPASS';
+    }
+
+    const response = new Response(responseBody, {
+      status: n8nRes.status,
+      headers: headers,
+    });
+
+    // Store in Cloudflare CDN Cache only if it's a past month
+    if (n8nRes.ok && isPastMonth) {
+      c.executionCtx.waitUntil(cache.put(request, response.clone()));
+    }
+
+    return response;
+  } catch (err) {
+    console.error('Affiliate ranking error:', err);
+    return c.json({ error: 'Failed to fetch affiliate ranking' }, 500);
+  }
+});
+
+/**
+ * Get purchase ranking by year and month
+ * GET /api/orders/purchase-ranking
+ */
+orderStatus.get('/purchase-ranking', async (c) => {
+  const env = c.env;
+  const request = c.req.raw;
+  const cache = caches.default;
+
+  try {
+    let year = c.req.query('y');
+    const month = c.req.query('m');
+
+    if (!year || !month) {
+      return c.json({ error: 'Missing year or month' }, 400);
+    }
+
+    // Auto-convert Gregorian year (e.g., 2026) to Thai Buddhist Era (พ.ศ., e.g., 2569)
+    const yearNum = parseInt(year, 10);
+    if (!isNaN(yearNum) && yearNum < 2500) {
+      year = (yearNum + 543).toString();
+    }
+
+    // Determine if it is a past month (cacheable)
+    const now = new Date();
+    const currentYearBE = now.getFullYear() + 543;
+    const currentMonth = now.getMonth() + 1;
+    const reqYear = parseInt(year, 10);
+    const reqMonth = parseInt(month, 10);
+
+    const isPastMonth = !isNaN(reqYear) && !isNaN(reqMonth) && 
+      (reqYear < currentYearBE || (reqYear === currentYearBE && reqMonth < currentMonth));
+
+    // 1. Try to retrieve from Cloudflare CDN Cache Server ONLY if it's a past month
+    if (isPastMonth) {
+      const cachedResponse = await cache.match(request);
+      if (cachedResponse) {
+        const newHeaders = new Headers(cachedResponse.headers);
+        newHeaders.set('X-Cache-Server', 'HIT');
+        return new Response(cachedResponse.body, {
+          status: cachedResponse.status,
+          headers: newHeaders,
+        });
+      }
+    }
+
+    const webhookUrl = env.N8N_PURCHASE_RANKING_WEBHOOK || 'https://primary-production-f112.up.railway.app/webhook/7bc19f76-2b4e-4341-a9c2-782907633dd7';
+    const n8nRes = await fetch(`${webhookUrl}?y=${year}&m=${month}`);
+    const responseText = await n8nRes.text();
+
+    // Validate response body - fallback to empty array if empty or invalid JSON
+    let responseBody = responseText;
+    if (!responseText || responseText.trim() === '') {
+      responseBody = '[]';
+    } else {
+      try {
+        JSON.parse(responseText);
+      } catch (_) {
+        responseBody = '[]';
+      }
+    }
+
+    // Configure headers - Cache past months, Bypass cache for current/future months
+    const headers = {
+      'Content-Type': 'application/json; charset=utf-8',
+    };
+
+    if (isPastMonth) {
+      headers['Cache-Control'] = 'public, max-age=86400'; // Cache for 24 hours on CDN
+      headers['X-Cache-Server'] = 'MISS';
+    } else {
+      headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'; // Always fetch live
+      headers['X-Cache-Server'] = 'BYPASS';
+    }
+
+    const response = new Response(responseBody, {
+      status: n8nRes.status,
+      headers: headers,
+    });
+
+    // Store in Cloudflare CDN Cache only if it's a past month
+    if (n8nRes.ok && isPastMonth) {
+      c.executionCtx.waitUntil(cache.put(request, response.clone()));
+    }
+
+    return response;
+  } catch (err) {
+    console.error('Purchase ranking error:', err);
+    return c.json({ error: 'Failed to fetch purchase ranking' }, 500);
   }
 });
 
