@@ -162,6 +162,24 @@ function renderProducts(dataObj) {
       imgPath = imgPath.replace('/product/', '/public/product/');
     }
 
+    // Define controls and styles depending on whether it's pc_ (pack) or not (retail)
+    let controlsHtml = '';
+    let cardStyle = '';
+    if (code.startsWith('pc_')) {
+      controlsHtml = `
+        <div class="quantity-controls" style="margin:12px auto 0 auto;display:flex;gap:8px;align-items:center;justify-content:center;width:100%;">
+            <button type="button" class="qty-btn minus" style="background:#ddd;border:none;border-radius:4px;width:25px;height:25px;cursor:pointer;">-</button>
+            <span class="qty-display" style="margin:0 10px;font-weight:bold;font-size:1.5rem;line-height:1.2;color:#222;">0</span>
+            <button type="button" class="qty-btn plus" style="background:#ffa500;color:white;border:none;border-radius:4px;width:25px;height:25px;cursor:pointer;">+</button>
+        </div>
+      `;
+    } else {
+      controlsHtml = `
+        <div style="margin:12px auto 0 auto;color:#95a5a6;font-weight:bold;font-size:13px;border:1px solid #bdc3c7;padding:6px 8px;border-radius:4px;background:#ecf0f1;user-select:none;">งดจำหน่ายปลีกชั่วคราว</div>
+      `;
+      cardStyle = 'opacity:0.65;cursor:not-allowed;pointer-events:none;';
+    }
+
     const map = {
       KEY: code,
       IMAGE: imgPath,
@@ -170,6 +188,8 @@ function renderProducts(dataObj) {
       TEXTURE: p.texture ?? '',
       PRICE: p.price ?? 0,
       PRICE_FMT: Number(p.price ?? 0).toLocaleString('th-TH'),
+      CONTROLS: controlsHtml,
+      CARD_STYLE: cardStyle,
     };
     if (code.startsWith('pc_')) {
       wrapPc.insertAdjacentHTML('beforeend', render(tpl, map));
