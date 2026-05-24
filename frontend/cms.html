@@ -446,12 +446,18 @@
       }
 
       for (const [key, p] of Object.entries(productCatalog)) {
+        // Normalize image path: prepend /public if path starts with /product/
+        let imgPath = p.image || '';
+        if (imgPath.startsWith('/product/')) {
+          imgPath = '/public' + imgPath;
+        }
+
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
           <div class="product-key">${key}</div>
           <div class="product-img-wrapper">
-            <img src="${p.image || '/public/img/download-icon.png'}" alt="${p.label}" onerror="this.src='/public/img/download-icon.png'">
+            <img src="${imgPath || '/public/img/download-icon.png'}" alt="${p.label}" onerror="this.src='/public/img/download-icon.png'">
           </div>
           <div class="product-title">${p.label || key}</div>
           <div class="product-meta">

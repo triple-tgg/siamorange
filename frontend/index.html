@@ -241,9 +241,13 @@
             const tpl = document.getElementById("productCardTpl").textContent.trim();
             const render = (str, map) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? "");
             for (const [code, p] of Object.entries(dataObj)) {
+              let imgPath = p.image || "";
+              if (imgPath.startsWith("/product/")) {
+                imgPath = "/public" + imgPath;
+              }
               const map = {
                 KEY: code,
-                IMAGE: p.image || "",
+                IMAGE: imgPath,
                 LABEL: p.label || code,
                 SIZE: p.size ?? "",
                 TEXTURE: p.texture ?? "",

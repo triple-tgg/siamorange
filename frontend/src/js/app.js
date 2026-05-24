@@ -152,9 +152,15 @@ function renderProducts(dataObj) {
   const render = (str, map) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? '');
 
   for (const [code, p] of Object.entries(dataObj)) {
+    // Normalize image path: prepend /public if path starts with /product/
+    let imgPath = p.image || '';
+    if (imgPath.startsWith('/product/')) {
+      imgPath = '/public' + imgPath;
+    }
+
     const map = {
       KEY: code,
-      IMAGE: p.image || '',
+      IMAGE: imgPath,
       LABEL: p.label || code,
       SIZE: p.size ?? '',
       TEXTURE: p.texture ?? '',
