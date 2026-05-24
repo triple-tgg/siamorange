@@ -10,7 +10,7 @@ const shipping = new Hono();
  * Fallback shipping rules (matches shipment-condition.js)
  */
 const FALLBACK_SHIPPING_RULES = {
-  specialEndDate: "2025-12-31T23:59:59",
+  specialEndDate: "2050-12-31T23:59:59",
   zones: {
     bkk_6km: {
       label: "กรุงเทพ รัศมี 6 กม.",
