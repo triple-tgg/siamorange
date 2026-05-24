@@ -241,9 +241,14 @@
             const tpl = document.getElementById("productCardTpl").textContent.trim();
             const render = (str, map) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? "");
             for (const [code, p] of Object.entries(dataObj)) {
+              // Normalize image path: support all variations of incorrect /product/ paths
               let imgPath = p.image || "";
-              if (imgPath.startsWith("/product/")) {
+              if (imgPath.startsWith("product/")) {
+                imgPath = "/public/" + imgPath;
+              } else if (imgPath.startsWith("/product/")) {
                 imgPath = "/public" + imgPath;
+              } else if (imgPath.includes("/product/") && !imgPath.includes("/public/product/")) {
+                imgPath = imgPath.replace("/product/", "/public/product/");
               }
               const map = {
                 KEY: code,
