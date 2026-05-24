@@ -202,12 +202,16 @@
               data-product="{{KEY}}"
               data-price="{{PRICE}}"
               data-label="{{LABEL}}"
-              style="border:2px solid #ddd;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all 0.3s;background:white;{{CARD_STYLE}}">
+              style="border:2px solid #ddd;border-radius:8px;padding:10px;cursor:pointer;text-align:center;transition:all 0.3s;background:white;">
           <img src="{{IMAGE}}" alt="{{LABEL}}" width="100%" height="auto">
           <div style="font-size:12px;margin-top:5px;">{{LABEL}}</div>
           <div style="font-size:10px;color:#666;">ขนาด {{SIZE}}ml. เนื้อส้ม {{TEXTURE}} กรัม</div>
           <div style="font-size:18px;color:#d35400;font-weight:bold;margin-top:4px;">฿{{PRICE_FMT}}</div>
-          {{CONTROLS}}
+          <div class="quantity-controls" style="margin:12px auto 0 auto;display:flex;gap:8px;align-items:center;justify-content:center;width:100%;">
+              <button type="button" class="qty-btn minus" style="background:#ddd;border:none;border-radius:4px;width:25px;height:25px;cursor:pointer;">-</button>
+              <span class="qty-display" style="margin:0 10px;font-weight:bold;font-size:1.5rem;line-height:1.2;color:#222;">0</span>
+              <button type="button" class="qty-btn plus" style="background:#ffa500;color:white;border:none;border-radius:4px;width:25px;height:25px;cursor:pointer;">+</button>
+          </div>
           </div>
         </script>
 
@@ -246,24 +250,6 @@
               } else if (imgPath.includes("/product/") && !imgPath.includes("/public/product/")) {
                 imgPath = imgPath.replace("/product/", "/public/product/");
               }
-              // Define controls and styles depending on whether it's pc_ (pack) or not (retail)
-              let controlsHtml = "";
-              let cardStyle = "";
-              if (code.startsWith("pc_")) {
-                controlsHtml = `
-                  <div class="quantity-controls" style="margin:12px auto 0 auto;display:flex;gap:8px;align-items:center;justify-content:center;width:100%;">
-                      <button type="button" class="qty-btn minus" style="background:#ddd;border:none;border-radius:4px;width:25px;height:25px;cursor:pointer;">-</button>
-                      <span class="qty-display" style="margin:0 10px;font-weight:bold;font-size:1.5rem;line-height:1.2;color:#222;">0</span>
-                      <button type="button" class="qty-btn plus" style="background:#ffa500;color:white;border:none;border-radius:4px;width:25px;height:25px;cursor:pointer;">+</button>
-                  </div>
-                `;
-              } else {
-                controlsHtml = `
-                  <div style="margin:12px auto 0 auto;color:#95a5a6;font-weight:bold;font-size:13px;border:1px solid #bdc3c7;padding:6px 8px;border-radius:4px;background:#ecf0f1;user-select:none;">งดจำหน่ายปลีกชั่วคราว</div>
-                `;
-                cardStyle = "opacity:0.65;cursor:not-allowed;pointer-events:none;";
-              }
-
               const map = {
                 KEY: code,
                 IMAGE: imgPath,
@@ -272,8 +258,6 @@
                 TEXTURE: p.texture ?? "",
                 PRICE: p.price ?? 0,
                 PRICE_FMT: Number(p.price ?? 0).toLocaleString("th-TH"),
-                CONTROLS: controlsHtml,
-                CARD_STYLE: cardStyle,
               };
               if (code.startsWith("pc_")) {
                 wrap_pc.insertAdjacentHTML("beforeend", render(tpl, map));
