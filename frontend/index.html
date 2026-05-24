@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="th">
   <head>
+    <script>
+      if (window.location.pathname.endsWith('/index.html')) {
+        const cleanPath = window.location.pathname.substring(0, window.location.pathname.length - 10);
+        window.location.replace(cleanPath + window.location.search + window.location.hash);
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
