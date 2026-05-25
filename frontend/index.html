@@ -353,7 +353,17 @@
       </label>
 
       <h2>📅 3. เลือกรอบจัดส่งสินค้า</h2>
-      <input type="date" name="delivery_date" required />
+      <input type="date" id="delivery_date" name="delivery_date" required />
+      <script>
+        (function() {
+          var d = document.getElementById('delivery_date');
+          if (d) {
+            var today = new Date().toISOString().split('T')[0];
+            d.min = today;
+            d.value = today;
+          }
+        })();
+      </script>
       <div style="margin: 10px 0 18px 0; display: flex; align-items: center; gap: 10px;">
         <input type="checkbox" id="delivery_now" name="delivery_now" value="1"
           style="width: 22px; height: 22px; accent-color: #ffa500" />
