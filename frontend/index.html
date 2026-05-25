@@ -352,16 +352,122 @@
         ></textarea>
       </label>
 
-      <h2>📅 3. เลือกรอบจัดส่งสินค้า</h2>
-      <input type="date" id="delivery_date" name="delivery_date" required />
+      <div id="datepicker-wrap" style="position:relative;width:100%;margin-bottom:12px;">
+        <input type="text" id="delivery_date_display" readonly
+          placeholder="📅 กดเพื่อเลือกวันที่จัดส่ง"
+          style="font-size:1.25rem;padding:10px 14px;border-radius:8px;border:2.5px solid #ffa500;background:#fffdfa;color:#333;width:100%;box-sizing:border-box;cursor:pointer;outline:none;" />
+        <input type="hidden" id="delivery_date" name="delivery_date" required />
+        <div id="cal-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:9000;background:#fff;border:2px solid #ffa500;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.18);margin-top:4px;padding:12px;user-select:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <button type="button" id="cal-prev" style="background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px 10px;color:#e67e22;">◀</button>
+            <span id="cal-title" style="font-weight:bold;font-size:1.1rem;color:#333;"></span>
+            <button type="button" id="cal-next" style="background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px 10px;color:#e67e22;">▶</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:6px;">
+            <span style="font-size:11px;color:#999;font-weight:bold;">อา</span>
+            <span style="font-size:11px;color:#999;font-weight:bold;">จ</span>
+            <span style="font-size:11px;color:#999;font-weight:bold;">อ</span>
+            <span style="font-size:11px;color:#999;font-weight:bold;">พ</span>
+            <span style="font-size:11px;color:#999;font-weight:bold;">พฤ</span>
+            <span style="font-size:11px;color:#999;font-weight:bold;">ศ</span>
+            <span style="font-size:11px;color:#999;font-weight:bold;">ส</span>
+          </div>
+          <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;"></div>
+        </div>
+      </div>
       <script>
         (function() {
-          var d = document.getElementById('delivery_date');
-          if (d) {
-            var today = new Date().toISOString().split('T')[0];
-            d.min = today;
-            d.value = today;
+          var display = document.getElementById('delivery_date_display');
+          var hidden = document.getElementById('delivery_date');
+          var dropdown = document.getElementById('cal-dropdown');
+          var grid = document.getElementById('cal-grid');
+          var title = document.getElementById('cal-title');
+          var prevBtn = document.getElementById('cal-prev');
+          var nextBtn = document.getElementById('cal-next');
+          var today = new Date(); today.setHours(0,0,0,0);
+          var viewYear = today.getFullYear();
+          var viewMonth = today.getMonth();
+          var selected = null;
+          var thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+          function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+          function render() {
+            title.textContent = thaiMonths[viewMonth] + ' ' + (viewYear + 543);
+            grid.innerHTML = '';
+            var first = new Date(viewYear, viewMonth, 1);
+            var startDay = first.getDay();
+            var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+            for (var i = 0; i < startDay; i++) {
+              var blank = document.createElement('span');
+              grid.appendChild(blank);
+            }
+
+            for (var d = 1; d <= daysInMonth; d++) {
+              var cell = document.createElement('button');
+              cell.type = 'button';
+              cell.textContent = d;
+              var cellDate = new Date(viewYear, viewMonth, d);
+              cell.style.cssText = 'border:none;border-radius:6px;padding:8px 2px;font-size:14px;cursor:pointer;background:transparent;color:#333;';
+
+              if (cellDate < today) {
+                cell.style.color = '#ccc';
+                cell.style.cursor = 'not-allowed';
+                cell.disabled = true;
+              } else {
+                cell.dataset.date = viewYear + '-' + pad(viewMonth + 1) + '-' + pad(d);
+                cell.addEventListener('click', function() {
+                  selected = this.dataset.date;
+                  hidden.value = selected;
+                  var parts = selected.split('-');
+                  display.value = parseInt(parts[2]) + ' ' + thaiMonths[parseInt(parts[1]) - 1] + ' ' + (parseInt(parts[0]) + 543);
+                  display.style.color = '#333';
+                  dropdown.style.display = 'none';
+                  render();
+                });
+              }
+
+              if (selected && cell.dataset.date === selected) {
+                cell.style.background = '#ffa500';
+                cell.style.color = '#fff';
+                cell.style.fontWeight = 'bold';
+              }
+              if (cellDate.getTime() === today.getTime() && cell.dataset.date !== selected) {
+                cell.style.border = '2px solid #ffa500';
+              }
+
+              grid.appendChild(cell);
+            }
           }
+
+          display.addEventListener('click', function() {
+            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+          });
+
+          prevBtn.addEventListener('click', function() {
+            viewMonth--;
+            if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+            render();
+          });
+
+          nextBtn.addEventListener('click', function() {
+            viewMonth++;
+            if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+            render();
+          });
+
+          document.addEventListener('click', function(e) {
+            if (!document.getElementById('datepicker-wrap').contains(e.target)) {
+              dropdown.style.display = 'none';
+            }
+          });
+
+          // Init: select today
+          selected = viewYear + '-' + pad(viewMonth + 1) + '-' + pad(today.getDate());
+          hidden.value = selected;
+          display.value = today.getDate() + ' ' + thaiMonths[viewMonth] + ' ' + (viewYear + 543);
+          render();
         })();
       </script>
       <div style="margin: 10px 0 18px 0; display: flex; align-items: center; gap: 10px;">
