@@ -134,10 +134,11 @@ input[type="date"]::-webkit-input-placeholder {
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-    filter: invert(0.5) sepia(1) saturate(5) hue-rotate(-20deg);
     cursor: pointer;
+    opacity: 1;
     height: 2em;
     width: 2em;
+    padding: 4px;
 }
 
 select {
