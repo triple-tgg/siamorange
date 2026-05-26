@@ -16,13 +16,17 @@
       href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/src/css/site.css" />
-    <link rel="stylesheet" href="/src/css/styles.css" />
-    <link rel="stylesheet" href="/src/css/thai-address.css" />
+    <!-- Auto cache-busting: version resets daily -->
+    <script>
+      var __v = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      document.write('<link rel="stylesheet" href="/src/css/site.css?v=' + __v + '" />');
+      document.write('<link rel="stylesheet" href="/src/css/styles.css?v=' + __v + '" />');
+      document.write('<link rel="stylesheet" href="/src/css/thai-address.css?v=' + __v + '" />');
+    </script>
     <link rel="icon" type="image/x-icon" href="/public/img/favicon.ico" />
     
     <!-- V2: ES Module scripts -->
-    <script type="module" src="/src/js/session.js"></script>
+    <script>document.write('<scr' + 'ipt type="module" src="/src/js/session.js?v=' + __v + '"><\/scr' + 'ipt>');</script>
 
     <!-- Disable retail (non-pc_) product purchasing via CSS -->
     <style>
@@ -647,9 +651,11 @@
     </form>
 
     <!-- V2: Load scripts via ES Modules -->
-    <script src="/src/data/thai-address-data.js"></script>
-    <script src="/src/js/thai-address.js"></script>
-    <script type="module" src="/src/js/app.js"></script>
+    <script>
+      document.write('<scr' + 'ipt src="/src/data/thai-address-data.js?v=' + __v + '"><\/scr' + 'ipt>');
+      document.write('<scr' + 'ipt src="/src/js/thai-address.js?v=' + __v + '"><\/scr' + 'ipt>');
+      document.write('<scr' + 'ipt type="module" src="/src/js/app.js?v=' + __v + '"><\/scr' + 'ipt>');
+    </script>
 
     <!-- UI-only scripts (no n8n URLs) -->
     <script>

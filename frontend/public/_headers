@@ -1,15 +1,23 @@
 /*! siamorange.pages.dev — Custom headers */
 /*
-  Cache-Control: public, max-age=3600
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/src/css/*
+  Cache-Control: public, max-age=300
+
+/src/js/*
+  Cache-Control: public, max-age=300
+
+/src/data/*
+  Cache-Control: public, max-age=3600
 
 /public/product/*
   Cache-Control: public, max-age=86400
 
 /public/img/*
   Cache-Control: public, max-age=86400
-
-/src/data/*
-  Cache-Control: public, max-age=3600
