@@ -79,7 +79,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/siamorange_set_0309.jpg?v=1",
     "size": 200,
     "texture": 10,
-    "price": 1400,
+    "price": 1560,
     "amount": 80,
     "note": ""
   },
@@ -88,7 +88,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/thaibuddha_set_0309.jpg?v=1",
     "size": 200,
     "texture": 10,
-    "price": 1600,
+    "price": 1760,
     "amount": 80,
     "note": ""
   },
@@ -97,7 +97,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/celebration_set_0309.jpg?v=1",
     "size": 200,
     "texture": 20,
-    "price": 2000,
+    "price": 2160,
     "amount": 80,
     "note": ""
   },
@@ -106,7 +106,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/thaicommunity_set_0309.jpg?v=1",
     "size": 270,
     "texture": 20,
-    "price": 2100,
+    "price": 2240,
     "amount": 70,
     "note": ""
   },
@@ -115,7 +115,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/royalceremony_set_0309.jpg?v=1",
     "size": 350,
     "texture": 30,
-    "price": 2000,
+    "price": 2200,
     "amount": 50,
     "note": ""
   },
@@ -124,7 +124,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/wanglang_set_0309.jpg?v=1",
     "size": 500,
     "texture": 10,
-    "price": 1600,
+    "price": 1760,
     "amount": 40,
     "note": ""
   },
@@ -133,7 +133,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/thairammakien_set_0309.jpg?v=1",
     "size": 500,
     "texture": 40,
-    "price": 2000,
+    "price": 2160,
     "amount": 40,
     "note": ""
   },
@@ -142,7 +142,7 @@ const FALLBACK_PRODUCTS = {
     "image": "/public/product/extralarge_set_0910.jpg?v=1",
     "size": 20000,
     "texture": 3000,
-    "price": 2000,
+    "price": 2100,
     "amount": 1,
     "note": ""
   }

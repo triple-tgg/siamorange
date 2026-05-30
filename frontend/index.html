@@ -1,233 +1,80 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
-    <script>
-      if (window.location.pathname.endsWith('/index.html')) {
-        const cleanPath = window.location.pathname.substring(0, window.location.pathname.length - 10);
-        window.location.replace(cleanPath + window.location.search + window.location.hash);
-      }
-    </script>
-    <meta charset="UTF-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Siam Orange — สั่งซื้อน้ำส้มคั้นสด</title>
-    <meta name="description" content="สั่งซื้อน้ำส้มคั้นสด Siam Orange คุณภาพพรีเมียม ส่งตรงถึงบ้าน กรุงเทพ นนทบุรี สมุทรปราการ และทั่วประเทศ" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Auto cache-busting: version resets daily -->
-    <script>
-      var __v = new Date().toISOString().slice(0,10).replace(/-/g,'');
-      document.write('<link rel="stylesheet" href="/src/css/site.css?v=' + __v + '" />');
-      document.write('<link rel="stylesheet" href="/src/css/styles.css?v=' + __v + '" />');
-      document.write('<link rel="stylesheet" href="/src/css/thai-address.css?v=' + __v + '" />');
-    </script>
-    <link rel="icon" type="image/x-icon" href="/public/img/favicon.ico" />
-    
-    <!-- V2: ES Module scripts -->
-    <script>document.write('<scr' + 'ipt type="module" src="/src/js/session.js?v=' + __v + '"><\/scr' + 'ipt>');</script>
 
-    <!-- Disable retail (non-pc_) product purchasing via CSS -->
-    <style>
-      #product_gallery_other .product-card {
-        opacity: 0.65;
-        pointer-events: none;
-        cursor: not-allowed;
-      }
-      #product_gallery_other .quantity-controls > * {
-        display: none;
-      }
-      #product_gallery_other .quantity-controls::after {
-        content: "งดจำหน่ายปลีกชั่วคราว";
-        display: block;
-        margin: 0 auto;
-        color: #95a5a6;
-        font-weight: bold;
-        font-size: 13px;
-        border: 1px solid #bdc3c7;
-        padding: 6px 8px;
-        border-radius: 4px;
-        background: #ecf0f1;
-        text-align: center;
-        user-select: none;
-      }
-    </style>
-  </head>
+<head>
+  <script>
+    if (window.location.pathname.endsWith('/index.html')) {
+      const cleanPath = window.location.pathname.substring(0, window.location.pathname.length - 10);
+      window.location.replace(cleanPath + window.location.search + window.location.hash);
+    }
+  </script>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Siam Orange — สั่งซื้อน้ำส้มคั้นสด</title>
+  <meta name="description"
+    content="สั่งซื้อน้ำส้มคั้นสด Siam Orange คุณภาพพรีเมียม ส่งตรงถึงบ้าน กรุงเทพ นนทบุรี สมุทรปราการ และทั่วประเทศ" />
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Auto cache-busting: version resets daily -->
+  <script>
+    var __v = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    document.write('<link rel="stylesheet" href="/src/css/site.css?v=' + __v + '" />');
+    document.write('<link rel="stylesheet" href="/src/css/styles.css?v=' + __v + '" />');
+    document.write('<link rel="stylesheet" href="/src/css/thai-address.css?v=' + __v + '" />');
+  </script>
+  <link rel="icon" type="image/x-icon" href="/public/img/favicon.ico" />
 
-  <body>
-    <!-- Logo Section -->
-    <div
-      class="logo-section"
-      style="text-align: center; margin: 20px auto; max-width: 500px"
-    >
-      <img
-        src="/public/img/banner01.jpg?v=2"
-        alt="Siam Orange Banner"
-        width="100%"
-        height="auto"
-      />
-    </div>
+  <!-- V2: ES Module scripts -->
+  <script>document.write('<scr' + 'ipt type="module" src="/src/js/session.js?v=' + __v + '"><\/scr' + 'ipt>');</script>
 
-    <!-- Easy Orange Juice Order Form -->
-    <form
-      id="orderForm"
-      method="POST"
-      enctype="multipart/form-data"
-      style="
+  <!-- Disable retail (non-pc_) product purchasing via CSS -->
+  <style>
+    #product_gallery_other .product-card {
+      opacity: 0.65;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    #product_gallery_other .quantity-controls>* {
+      display: none;
+    }
+
+    #product_gallery_other .quantity-controls::after {
+      content: "งดจำหน่ายปลีกชั่วคราว";
+      display: block;
+      margin: 0 auto;
+      color: #95a5a6;
+      font-weight: bold;
+      font-size: 13px;
+      border: 1px solid #bdc3c7;
+      padding: 6px 8px;
+      border-radius: 4px;
+      background: #ecf0f1;
+      text-align: center;
+      user-select: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Logo Section -->
+  <div class="logo-section" style="text-align: center; margin: 20px auto; max-width: 500px">
+    <img src="/public/img/banner01.jpg?v=2" alt="Siam Orange Banner" width="100%" height="auto" />
+  </div>
+
+  <!-- Easy Orange Juice Order Form -->
+  <form id="orderForm" method="POST" enctype="multipart/form-data" style="
         max-width: 500px;
         margin: 20px auto;
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 8px;
-      "
-    >
-      <h2>🧃 1. รายการสินค้า</h2>
+      ">
+    <h2>🧃 1. รายการสินค้า</h2>
 
-      <div class="product-gallery">
-        <!-- Product data (inline JSON — also available from /api/products) -->
-        <script id="productsData" type="application/json">
-          {
-            "ml200g10_dtt1": {
-              "label": "ลายวันสำคัญทางศาสนา",
-              "image": "/public/product/thaibuddha_2008.jpg?v=1",
-              "size": 200,
-              "texture": 10,
-              "price": 20,
-              "amount": 1,
-              "note": ""
-            },
-            "ml200g10_dtt2": {
-              "label": "ครบรอบ1ปีท่าวังหลัง",
-              "image": "/public/product/celebration_2008.jpg?v=1",
-              "size": 200,
-              "texture": 20,
-              "price": 25,
-              "amount": 1,
-              "note": ""
-            },
-            "ml200g20_dtt1": {
-              "label": "ลายวิถีชุมชน",
-              "image": "/public/product/thaicommunity_2008.jpg?v=1",
-              "size": 270,
-              "texture": 20,
-              "price": 30,
-              "amount": 1,
-              "note": ""
-            },
-            "ml350g30_dtt1": {
-              "label": "ลายราชพิธี",
-              "image": "/public/product/royalceremony_2008.jpg?v=1",
-              "size": 350,
-              "texture": 30,
-              "price": 40,
-              "amount": 1,
-              "note": ""
-            },
-            "ml500g40_dtt1": {
-              "label": "ลายท่าวังหลัง",
-              "image": "/public/product/wanglang_2008.jpg?v=1",
-              "size": 500,
-              "texture": 40,
-              "price": 50,
-              "amount": 1,
-              "note": ""
-            },
-            "ml500g120_dtt1": {
-              "label": "ป่าในวรรณคดี",
-              "image": "/public/product/forestliterature_2008.jpg?v=1",
-              "size": 500,
-              "texture": 120,
-              "price": 120,
-              "amount": 1,
-              "note": ""
-            },
-            "bx_ml500g40_dtt1": {
-              "label": "รามเกียรติ์ 4 กระป๋อง คละลาย",
-              "image": "/public/product/thairammakien_2008.jpg?v=1",
-              "size": 500,
-              "texture": 40,
-              "price": 200,
-              "amount": 4,
-              "note": ""
-            },
-            "pc_ml200g10_dtt1": {
-              "label": "ลายสยามออเร้นจ์",
-              "image": "/public/product/siamorange_set_0309.jpg?v=1",
-              "size": 200,
-              "texture": 10,
-              "price": 1400,
-              "amount": 80,
-              "note": ""
-            },
-            "pc_ml200g10_dtt2": {
-              "label": "ลายวันสำคัญทางศาสนา",
-              "image": "/public/product/thaibuddha_set_0309.jpg?v=1",
-              "size": 200,
-              "texture": 10,
-              "price": 1600,
-              "amount": 80,
-              "note": ""
-            },
-            "pc_ml200g20_dtt1": {
-              "label": "ครบรอบ1ปีท่าวังหลัง",
-              "image": "/public/product/celebration_set_0309.jpg?v=1",
-              "size": 200,
-              "texture": 20,
-              "price": 2000,
-              "amount": 80,
-              "note": ""
-            },
-            "pc_ml270g20_dtt1": {
-              "label": "ลายวิถีชุมชน",
-              "image": "/public/product/thaicommunity_set_0309.jpg?v=1",
-              "size": 270,
-              "texture": 20,
-              "price": 2100,
-              "amount": 70,
-              "note": ""
-            },
-            "pc_ml350g30_dtt1": {
-              "label": "ลายราชพิธี",
-              "image": "/public/product/royalceremony_set_0309.jpg?v=1",
-              "size": 350,
-              "texture": 30,
-              "price": 2000,
-              "amount": 50,
-              "note": ""
-            },
-            "pc_ml500g10_dtt1": {
-              "label": "ลายท่าวังหลังและป่าวรรณคดี",
-              "image": "/public/product/wanglang_set_0309.jpg?v=1",
-              "size": 500,
-              "texture": 10,
-              "price": 1600,
-              "amount": 40,
-              "note": ""
-            },
-            "pc_ml500g40_dtt1": {
-              "label": "รามเกียรติ์ คละลายละ 10 กระป๋อง",
-              "image": "/public/product/thairammakien_set_0309.jpg?v=1",
-              "size": 500,
-              "texture": 40,
-              "price": 2000,
-              "amount": 40,
-              "note": ""
-            },
-            "pc_ml2000g3000_dtt1": {
-              "label": "น้ำส้มคั้นสด 20 ลิตร/ เนื้อส้มแกะ 3 กิโลกรัม + สติกเกอร์สยามออเรนจ์ 100 ดวง",
-              "image": "/public/product/extralarge_set_0910.jpg?v=1",
-              "size": 20000,
-              "texture": 3000,
-              "price": 2000,
-              "amount": 1,
-              "note": ""
-            }
-          }
-        </script>
-
-        <!-- Product card template -->
-        <script id="productCardTpl" type="text/plain">
+    <div class="product-gallery">
+      <!-- Product card template (used by app.js to render from API) -->
+      <script id="productCardTpl" type="text/plain">
           <div class="product-card"
               data-product="{{KEY}}"
               data-price="{{PRICE}}"
@@ -245,99 +92,44 @@
           </div>
         </script>
 
-        <!-- Product galleries -->
-        <div style="margin-bottom: 18px">
-          <h3 style="color: #e67e22">🍊 กลุ่มสินค้ายกเซ็ท</h3>
-          <div
-            id="product_gallery_pc"
-            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"
-          ></div>
-        </div>
-        <div>
-          <h3 style="color: #e67e22">🍹 กลุ่มสินค้าปลีก</h3>
-          <div
-            id="product_gallery_other"
-            style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"
-          ></div>
-        </div>
-
-        <!-- Render products from inline JSON -->
-        <script>
-          (function () {
-            const jsonText = document.getElementById("productsData").textContent.trim();
-            const dataObj = JSON.parse(jsonText);
-            const wrap_pc = document.getElementById("product_gallery_pc");
-            const wrap_other = document.getElementById("product_gallery_other");
-            const tpl = document.getElementById("productCardTpl").textContent.trim();
-            const render = (str, map) => str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? "");
-            for (const [code, p] of Object.entries(dataObj)) {
-              // Normalize image path: support all variations of incorrect /product/ paths
-              let imgPath = p.image || "";
-              if (imgPath.startsWith("product/")) {
-                imgPath = "/public/" + imgPath;
-              } else if (imgPath.startsWith("/product/")) {
-                imgPath = "/public" + imgPath;
-              } else if (imgPath.includes("/product/") && !imgPath.includes("/public/product/")) {
-                imgPath = imgPath.replace("/product/", "/public/product/");
-              }
-              const map = {
-                KEY: code,
-                IMAGE: imgPath,
-                LABEL: p.label || code,
-                SIZE: p.size ?? "",
-                TEXTURE: p.texture ?? "",
-                PRICE: p.price ?? 0,
-                PRICE_FMT: Number(p.price ?? 0).toLocaleString("th-TH"),
-              };
-              if (code.startsWith("pc_")) {
-                wrap_pc.insertAdjacentHTML("beforeend", render(tpl, map));
-              } else {
-                wrap_other.insertAdjacentHTML("beforeend", render(tpl, map));
-              }
-            }
-          })();
-        </script>
+      <!-- Product galleries (rendered by app.js from /api/products) -->
+      <div style="margin-bottom: 18px">
+        <h3 style="color: #e67e22">🍊 กลุ่มสินค้ายกเซ็ท</h3>
+        <div id="product_gallery_pc" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"></div>
       </div>
-
-      <h2>📍 2. ที่อยู่จัดส่ง</h2>
-      <label>🔤 ชื่อ-นามสกุล<br />
-        <input type="text" id="customer_name" name="customer_name" required />
-      </label>
-      <label>📞 เบอร์โทรติดต่อ<br />
-        <input
-          type="tel"
-          id="phone"
-          name="phone"
-          pattern="^[0-9]{10}$"
-          maxlength="10"
-          inputmode="numeric"
-          required
-          oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)"
-        />
-      </label>
-      <label>🏠 ที่อยู่ (บ้านเลขที่, หมู่, ถนน)<br />
-        <input type="text" id="address_detail" name="address_detail" required />
-      </label>
-      <div class="form-group">
-        <label for="subdistrict">🏘️ ตำบล/แขวง</label>
-        <input type="text" id="subdistrict" name="subdistrict" placeholder="พิมพ์ชื่อตำบล..." autocomplete="off" required>
-        <div class="suggestions" id="suggestions"></div>
+      <div>
+        <h3 style="color: #e67e22">🍹 กลุ่มสินค้าปลีก</h3>
+        <div id="product_gallery_other" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"></div>
       </div>
-      <label>🏙️ อำเภอ/เขต<br />
-        <input type="text" name="district" id="district" required />
-      </label>
-      <label>🌆 จังหวัด<br />
-        <input type="text" name="province" id="province" required />
-      </label>
-      <label>📮 รหัสไปรษณีย์<br />
-        <input type="text" name="zipcode" id="zipcode" pattern="[0-9]{5}" required readonly />
-      </label>
-      <label>📝 หมายเหตุเพิ่มเติม<br />
-        <textarea
-          name="note"
-          id="note"
-          placeholder="ฝากข้อความถึงไรเดอร์ หรือร้าน"
-          style="
+    </div>
+
+    <h2>📍 2. ที่อยู่จัดส่ง</h2>
+    <label>🔤 ชื่อ-นามสกุล<br />
+      <input type="text" id="customer_name" name="customer_name" required />
+    </label>
+    <label>📞 เบอร์โทรติดต่อ<br />
+      <input type="tel" id="phone" name="phone" pattern="^[0-9]{10}$" maxlength="10" inputmode="numeric" required
+        oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)" />
+    </label>
+    <label>🏠 ที่อยู่ (บ้านเลขที่, หมู่, ถนน)<br />
+      <input type="text" id="address_detail" name="address_detail" required />
+    </label>
+    <div class="form-group">
+      <label for="subdistrict">🏘️ ตำบล/แขวง</label>
+      <input type="text" id="subdistrict" name="subdistrict" placeholder="พิมพ์ชื่อตำบล..." autocomplete="off" required>
+      <div class="suggestions" id="suggestions"></div>
+    </div>
+    <label>🏙️ อำเภอ/เขต<br />
+      <input type="text" name="district" id="district" required />
+    </label>
+    <label>🌆 จังหวัด<br />
+      <input type="text" name="province" id="province" required />
+    </label>
+    <label>📮 รหัสไปรษณีย์<br />
+      <input type="text" name="zipcode" id="zipcode" pattern="[0-9]{5}" required readonly />
+    </label>
+    <label>📝 หมายเหตุเพิ่มเติม<br />
+      <textarea name="note" id="note" placeholder="ฝากข้อความถึงไรเดอร์ หรือร้าน" style="
             width: 100%;
             min-height: 100px;
             padding: 10px 12px;
@@ -350,213 +142,209 @@
             resize: vertical;
             outline: none;
             transition: border-color 0.2s;
-          "
-          onfocus="this.style.borderColor='#e67e22'"
-          onblur="this.style.borderColor='orange'"
-        ></textarea>
+          " onfocus="this.style.borderColor='#e67e22'" onblur="this.style.borderColor='orange'"></textarea>
+    </label>
+
+    <div id="datepicker-wrap" style="position:relative;width:100%;margin-bottom:12px;">
+      <input type="text" id="delivery_date_display" readonly placeholder="📅 กดเพื่อเลือกวันที่จัดส่ง"
+        style="font-size:1.25rem;padding:10px 14px;border-radius:8px;border:2.5px solid #ffa500;background:#fffdfa;color:#333;width:100%;box-sizing:border-box;cursor:pointer;outline:none;" />
+      <input type="hidden" id="delivery_date" name="delivery_date" required />
+      <div id="cal-dropdown"
+        style="display:none;position:absolute;top:100%;left:0;right:0;z-index:9000;background:#fff;border:2px solid #ffa500;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.18);margin-top:4px;padding:12px;user-select:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <button type="button" id="cal-prev"
+            style="background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px 10px;color:#e67e22;">◀</button>
+          <span id="cal-title" style="font-weight:bold;font-size:1.1rem;color:#333;"></span>
+          <button type="button" id="cal-next"
+            style="background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px 10px;color:#e67e22;">▶</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:6px;">
+          <span style="font-size:11px;color:#999;font-weight:bold;">อา</span>
+          <span style="font-size:11px;color:#999;font-weight:bold;">จ</span>
+          <span style="font-size:11px;color:#999;font-weight:bold;">อ</span>
+          <span style="font-size:11px;color:#999;font-weight:bold;">พ</span>
+          <span style="font-size:11px;color:#999;font-weight:bold;">พฤ</span>
+          <span style="font-size:11px;color:#999;font-weight:bold;">ศ</span>
+          <span style="font-size:11px;color:#999;font-weight:bold;">ส</span>
+        </div>
+        <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;"></div>
+      </div>
+    </div>
+    <script>
+      (function () {
+        var display = document.getElementById('delivery_date_display');
+        var hidden = document.getElementById('delivery_date');
+        var dropdown = document.getElementById('cal-dropdown');
+        var grid = document.getElementById('cal-grid');
+        var title = document.getElementById('cal-title');
+        var prevBtn = document.getElementById('cal-prev');
+        var nextBtn = document.getElementById('cal-next');
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var selected = null;
+        var thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+        function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+        function render() {
+          title.textContent = thaiMonths[viewMonth] + ' ' + (viewYear + 543);
+          grid.innerHTML = '';
+          var first = new Date(viewYear, viewMonth, 1);
+          var startDay = first.getDay();
+          var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+          for (var i = 0; i < startDay; i++) {
+            var blank = document.createElement('span');
+            grid.appendChild(blank);
+          }
+
+          for (var d = 1; d <= daysInMonth; d++) {
+            var cell = document.createElement('button');
+            cell.type = 'button';
+            cell.textContent = d;
+            var cellDate = new Date(viewYear, viewMonth, d);
+            cell.style.cssText = 'border:none;border-radius:6px;padding:8px 2px;font-size:14px;cursor:pointer;background:transparent;color:#333;';
+
+            if (cellDate < today) {
+              cell.style.color = '#ccc';
+              cell.style.cursor = 'not-allowed';
+              cell.disabled = true;
+            } else {
+              cell.dataset.date = viewYear + '-' + pad(viewMonth + 1) + '-' + pad(d);
+              cell.addEventListener('click', function () {
+                selected = this.dataset.date;
+                hidden.value = selected;
+                var parts = selected.split('-');
+                display.value = parseInt(parts[2]) + ' ' + thaiMonths[parseInt(parts[1]) - 1] + ' ' + (parseInt(parts[0]) + 543);
+                display.style.color = '#333';
+                dropdown.style.display = 'none';
+                render();
+              });
+            }
+
+            if (selected && cell.dataset.date === selected) {
+              cell.style.background = '#ffa500';
+              cell.style.color = '#fff';
+              cell.style.fontWeight = 'bold';
+            }
+            if (cellDate.getTime() === today.getTime() && cell.dataset.date !== selected) {
+              cell.style.border = '2px solid #ffa500';
+            }
+
+            grid.appendChild(cell);
+          }
+        }
+
+        display.addEventListener('click', function () {
+          dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+        });
+
+        prevBtn.addEventListener('click', function () {
+          viewMonth--;
+          if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+          render();
+        });
+
+        nextBtn.addEventListener('click', function () {
+          viewMonth++;
+          if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+          render();
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!document.getElementById('datepicker-wrap').contains(e.target)) {
+            dropdown.style.display = 'none';
+          }
+        });
+
+        // Init: no default date — customer must select
+        render();
+      })();
+    </script>
+    <div style="margin: 10px 0 18px 0; display: flex; align-items: center; gap: 10px;">
+      <input type="checkbox" id="delivery_now" name="delivery_now" value="1"
+        style="width: 22px; height: 22px; accent-color: #ffa500" />
+      <label for="delivery_now" style="font-size: 1.1rem; color: #d35400; cursor: pointer">
+        จัดส่งทันที (เมื่อสินค้าพร้อม)
+      </label>
+    </div>
+    <br />
+
+    <!-- Payment Method -->
+    <h2>💳 4. วิธีการชำระเงิน</h2>
+    <div class="payment-methods" style="margin: 15px 0">
+      <label id="payment_method"
+        style="display: flex; align-items: center; margin: 10px 0; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+        <input type="radio" name="payment_method" value="promptpay" style="margin-right: 10px; width: auto" />
+        <img src="/public/img/PromptPay-logo.png" alt="PromptPay" style="width: 50px; margin-right: 10px" />
+        <div>
+          <div style="font-weight: bold">PromptPay</div>
+          <div style="font-size: 12px; color: #666">สแกน QR Code</div>
+        </div>
       </label>
 
-      <div id="datepicker-wrap" style="position:relative;width:100%;margin-bottom:12px;">
-        <input type="text" id="delivery_date_display" readonly
-          placeholder="📅 กดเพื่อเลือกวันที่จัดส่ง"
-          style="font-size:1.25rem;padding:10px 14px;border-radius:8px;border:2.5px solid #ffa500;background:#fffdfa;color:#333;width:100%;box-sizing:border-box;cursor:pointer;outline:none;" />
-        <input type="hidden" id="delivery_date" name="delivery_date" required />
-        <div id="cal-dropdown" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:9000;background:#fff;border:2px solid #ffa500;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.18);margin-top:4px;padding:12px;user-select:none;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <button type="button" id="cal-prev" style="background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px 10px;color:#e67e22;">◀</button>
-            <span id="cal-title" style="font-weight:bold;font-size:1.1rem;color:#333;"></span>
-            <button type="button" id="cal-next" style="background:none;border:none;font-size:1.5rem;cursor:pointer;padding:4px 10px;color:#e67e22;">▶</button>
+      <div id="payment_method_slip">
+        <div style="width: 100%; text-align: center">
+          <img src="/public/img/Promtpay-Merchant.jpg?v=2"
+            style="width: 100%; border-radius: 15px; box-shadow: 0 2px 8px #ffa500;" />
+          <div style="margin-top: 10px">
+            <a href="/public/img/Promtpay-Merchant.jpg?v=2" download="PromptPay-Merchant.jpg" id="downloadPromptPayImg"
+              style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; background: #fffdfa; border: 1.5px solid #ffa500; border-radius: 24px; color: #d35400; font-weight: 600; font-size: 1.1rem; box-shadow: 0 2px 8px #ffa500; cursor: pointer; text-decoration: none;">
+              <img src="/public/img/download-icon.png" alt="Download"
+                style="width: 22px; height: 22px; vertical-align: middle" />
+              <span style="font-size: 1rem">ดาวน์โหลด</span>
+            </a>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;margin-bottom:6px;">
-            <span style="font-size:11px;color:#999;font-weight:bold;">อา</span>
-            <span style="font-size:11px;color:#999;font-weight:bold;">จ</span>
-            <span style="font-size:11px;color:#999;font-weight:bold;">อ</span>
-            <span style="font-size:11px;color:#999;font-weight:bold;">พ</span>
-            <span style="font-size:11px;color:#999;font-weight:bold;">พฤ</span>
-            <span style="font-size:11px;color:#999;font-weight:bold;">ศ</span>
-            <span style="font-size:11px;color:#999;font-weight:bold;">ส</span>
-          </div>
-          <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;"></div>
         </div>
-      </div>
-      <script>
-        (function() {
-          var display = document.getElementById('delivery_date_display');
-          var hidden = document.getElementById('delivery_date');
-          var dropdown = document.getElementById('cal-dropdown');
-          var grid = document.getElementById('cal-grid');
-          var title = document.getElementById('cal-title');
-          var prevBtn = document.getElementById('cal-prev');
-          var nextBtn = document.getElementById('cal-next');
-          var today = new Date(); today.setHours(0,0,0,0);
-          var viewYear = today.getFullYear();
-          var viewMonth = today.getMonth();
-          var selected = null;
-          var thaiMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-
-          function pad(n) { return n < 10 ? '0' + n : '' + n; }
-
-          function render() {
-            title.textContent = thaiMonths[viewMonth] + ' ' + (viewYear + 543);
-            grid.innerHTML = '';
-            var first = new Date(viewYear, viewMonth, 1);
-            var startDay = first.getDay();
-            var daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-            for (var i = 0; i < startDay; i++) {
-              var blank = document.createElement('span');
-              grid.appendChild(blank);
-            }
-
-            for (var d = 1; d <= daysInMonth; d++) {
-              var cell = document.createElement('button');
-              cell.type = 'button';
-              cell.textContent = d;
-              var cellDate = new Date(viewYear, viewMonth, d);
-              cell.style.cssText = 'border:none;border-radius:6px;padding:8px 2px;font-size:14px;cursor:pointer;background:transparent;color:#333;';
-
-              if (cellDate < today) {
-                cell.style.color = '#ccc';
-                cell.style.cursor = 'not-allowed';
-                cell.disabled = true;
-              } else {
-                cell.dataset.date = viewYear + '-' + pad(viewMonth + 1) + '-' + pad(d);
-                cell.addEventListener('click', function() {
-                  selected = this.dataset.date;
-                  hidden.value = selected;
-                  var parts = selected.split('-');
-                  display.value = parseInt(parts[2]) + ' ' + thaiMonths[parseInt(parts[1]) - 1] + ' ' + (parseInt(parts[0]) + 543);
-                  display.style.color = '#333';
-                  dropdown.style.display = 'none';
-                  render();
-                });
-              }
-
-              if (selected && cell.dataset.date === selected) {
-                cell.style.background = '#ffa500';
-                cell.style.color = '#fff';
-                cell.style.fontWeight = 'bold';
-              }
-              if (cellDate.getTime() === today.getTime() && cell.dataset.date !== selected) {
-                cell.style.border = '2px solid #ffa500';
-              }
-
-              grid.appendChild(cell);
-            }
-          }
-
-          display.addEventListener('click', function() {
-            dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-          });
-
-          prevBtn.addEventListener('click', function() {
-            viewMonth--;
-            if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-            render();
-          });
-
-          nextBtn.addEventListener('click', function() {
-            viewMonth++;
-            if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-            render();
-          });
-
-          document.addEventListener('click', function(e) {
-            if (!document.getElementById('datepicker-wrap').contains(e.target)) {
-              dropdown.style.display = 'none';
-            }
-          });
-
-          // Init: no default date — customer must select
-          render();
-        })();
-      </script>
-      <div style="margin: 10px 0 18px 0; display: flex; align-items: center; gap: 10px;">
-        <input type="checkbox" id="delivery_now" name="delivery_now" value="1"
-          style="width: 22px; height: 22px; accent-color: #ffa500" />
-        <label for="delivery_now" style="font-size: 1.1rem; color: #d35400; cursor: pointer">
-          จัดส่งทันที (เมื่อสินค้าพร้อม)
-        </label>
-      </div>
-      <br />
-
-      <!-- Payment Method -->
-      <h2>💳 4. วิธีการชำระเงิน</h2>
-      <div class="payment-methods" style="margin: 15px 0">
-        <label id="payment_method"
-          style="display: flex; align-items: center; margin: 10px 0; padding: 10px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
-          <input type="radio" name="payment_method" value="promptpay" style="margin-right: 10px; width: auto" />
-          <img src="/public/img/PromptPay-logo.png" alt="PromptPay" style="width: 50px; margin-right: 10px" />
-          <div>
-            <div style="font-weight: bold">PromptPay</div>
-            <div style="font-size: 12px; color: #666">สแกน QR Code</div>
-          </div>
-        </label>
-
-        <div id="payment_method_slip">
-          <div style="width: 100%; text-align: center">
-            <img
-              src="/public/img/Promtpay-Merchant.jpg?v=2"
-              style="width: 100%; border-radius: 15px; box-shadow: 0 2px 8px #ffa500;"
-            />
-            <div style="margin-top: 10px">
-              <a href="/public/img/Promtpay-Merchant.jpg?v=2" download="PromptPay-Merchant.jpg" id="downloadPromptPayImg"
-                style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; background: #fffdfa; border: 1.5px solid #ffa500; border-radius: 24px; color: #d35400; font-weight: 600; font-size: 1.1rem; box-shadow: 0 2px 8px #ffa500; cursor: pointer; text-decoration: none;">
-                <img src="/public/img/download-icon.png" alt="Download" style="width: 22px; height: 22px; vertical-align: middle" />
-                <span style="font-size: 1rem">ดาวน์โหลด</span>
-              </a>
-            </div>
-          </div>
-          <style>
-            #payment_method_slip {
-              display: none;
-              background-color: #f5f5f5;
-              padding: 10px;
-              border-radius: 15px;
-            }
-            #payment_method_slip img {
-              border-radius: 15px;
-              box-shadow: #fefefe 5px;
-            }
-          </style>
-        </div>
-
         <style>
-          #payment_upload_slip {
+          #payment_method_slip {
+            display: none;
             background-color: #f5f5f5;
             padding: 10px;
-            margin-top: 20px;
             border-radius: 15px;
           }
-        </style>
-        <div id="payment_upload_slip">
-          <div class="field" style="margin-top: 1em">
-            <label for="slip_upload">📄 อัปโหลดสลิปการโอนเงิน</label>
-            <input type="file" id="slip_upload" name="slip_upload" accept="image/jpeg,image/png" required />
-            <small>รองรับไฟล์ภาพ JPG, PNG เท่านั้น</small>
-          </div>
 
-          <div class="field checkbox" style="margin-top: 1em; display: flex; align-items: center; gap: 0.5em;">
-            <input type="checkbox" id="accept_terms" name="accept_terms" style="margin: 5px 0px 0px 0px" required />
-            <label for="accept_terms">
-              ฉันได้อ่านและยอมรับ
-              <a href="terms.html" target="_blank" rel="noopener noreferrer">เงื่อนไขการให้บริการ</a>
-            </label>
-          </div>
+          #payment_method_slip img {
+            border-radius: 15px;
+            box-shadow: #fefefe 5px;
+          }
+        </style>
+      </div>
+
+      <style>
+        #payment_upload_slip {
+          background-color: #f5f5f5;
+          padding: 10px;
+          margin-top: 20px;
+          border-radius: 15px;
+        }
+      </style>
+      <div id="payment_upload_slip">
+        <div class="field" style="margin-top: 1em">
+          <label for="slip_upload">📄 อัปโหลดสลิปการโอนเงิน</label>
+          <input type="file" id="slip_upload" name="slip_upload" accept="image/jpeg,image/png" required />
+          <small>รองรับไฟล์ภาพ JPG, PNG เท่านั้น</small>
+        </div>
+
+        <div class="field checkbox" style="margin-top: 1em; display: flex; align-items: center; gap: 0.5em;">
+          <input type="checkbox" id="accept_terms" name="accept_terms" style="margin: 5px 0px 0px 0px" required />
+          <label for="accept_terms">
+            ฉันได้อ่านและยอมรับ
+            <a href="terms.html" target="_blank" rel="noopener noreferrer">เงื่อนไขการให้บริการ</a>
+          </label>
         </div>
       </div>
+    </div>
 
-      <div id="btn_send_order" style="margin-bottom: 200px">
-        <button type="submit" id="form_submit" disabled class="submit-button">
-          🔘 ยืนยันการสั่งซื้อ
-        </button>
-      </div>
+    <div id="btn_send_order" style="margin-bottom: 200px">
+      <button type="submit" id="form_submit" disabled class="submit-button">
+        🔘 ยืนยันการสั่งซื้อ
+      </button>
+    </div>
 
-      <!-- Cart Summary -->
-      <div
-        class="cart-summary"
-        id="cartSummaryBox"
-        style="
+    <!-- Cart Summary -->
+    <div class="cart-summary" id="cartSummaryBox" style="
           display: none;
           position: fixed;
           left: 0;
@@ -570,30 +358,27 @@
           margin: 0;
           border-top: 2.5px solid #ffa500;
           box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
-        "
-      >
-        <h3 style="margin: 0 0 10px; color: #e67e22">🛒 รายการที่เลือก</h3>
-        <div id="cartItems" style="min-height: 30px">
-          <p style="color: #666; font-style: italic; margin: 0">
-            กรุณาเลือกสินค้าจากด้านบน
-          </p>
-        </div>
-        <div id="ship-cost" style="display: flex; justify-content: space-between">
-          <span>ค่าจัดส่ง</span>
-          <span id="deliveryFee">฿0</span>
-        </div>
-        <div style="font-size: 10px; color: #666">
-          📌 พื้นที่เขตจัดส่งด่วนใน 1 วัน กรุงเทพ และนนทบุรี ทุกเขต/สมุทรปราการ เฉพาะพระประแดง,พระสมุทรเจดีย์
-        </div>
-        <div style="font-size: 10px; color: #666">
-          📌 นอกพื้นที่ส่งด่วน สั่งยกเซ็ท (ฟรีจัดส่ง) โปรโมชั่น แพ็คกล่องโฟม+บริการน้ำแข็ง+ส่งฟรีทั่วประเทศ สินค้าถึงใน 1-2 วัน (หยุดส่งวันอาทิตย์)
-        </div>
+        ">
+      <h3 style="margin: 0 0 10px; color: #e67e22">🛒 รายการที่เลือก</h3>
+      <div id="cartItems" style="min-height: 30px">
+        <p style="color: #666; font-style: italic; margin: 0">
+          กรุณาเลือกสินค้าจากด้านบน
+        </p>
       </div>
+      <div id="ship-cost" style="display: flex; justify-content: space-between">
+        <span>ค่าจัดส่ง</span>
+        <span id="deliveryFee">฿0</span>
+      </div>
+      <div style="font-size: 10px; color: #666">
+        📌 พื้นที่เขตจัดส่งด่วนใน 1 วัน กรุงเทพ และนนทบุรี ทุกเขต/สมุทรปราการ เฉพาะพระประแดง,พระสมุทรเจดีย์
+      </div>
+      <div style="font-size: 10px; color: #666">
+        📌 นอกพื้นที่ส่งด่วน สั่งยกเซ็ท (ฟรีจัดส่ง) โปรโมชั่น แพ็คกล่องโฟม+บริการน้ำแข็ง+ส่งฟรีทั่วประเทศ สินค้าถึงใน
+        1-2 วัน (หยุดส่งวันอาทิตย์)
+      </div>
+    </div>
 
-      <div
-        id="summray-price"
-        class="sticky-summary-bar"
-        style="
+    <div id="summray-price" class="sticky-summary-bar" style="
           position: fixed;
           left: 0;
           right: 0;
@@ -610,12 +395,10 @@
           box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
           cursor: pointer;
           user-select: none;
-        "
-      >
-        <span style="display: flex; align-items: center; gap: 8px; flex: 1 1 auto">
-          <span>ราคารวม:</span>
-          <span
-            style="
+        ">
+      <span style="display: flex; align-items: center; gap: 8px; flex: 1 1 auto">
+        <span>ราคารวม:</span>
+        <span style="
               font-size: 0.95em;
               color: #fff;
               background: #e67e22;
@@ -625,111 +408,107 @@
               align-items: center;
               gap: 5px;
               box-shadow: 0 1px 4px #e67e22a0;
-            "
-          >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="vertical-align: middle">
-              <path d="M5 8l5 5 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span style="font-size: 0.98em">กดเพื่อดูตะกร้า</span>
-          </span>
+            ">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" style="vertical-align: middle">
+            <path d="M5 8l5 5 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span style="font-size: 0.98em">กดเพื่อดูตะกร้า</span>
         </span>
-        <span
-          id="totalPrice"
-          style="color: #222; font-weight: bold; font-size: 20px; text-align: right; min-width: 90px;"
-        >฿0</span>
-        <span
-          id="toggleIcon"
-          style="color: #ffa500; margin-left: 12px; font-size: 1.2em; transition: transform 0.2s;"
-        >▼</span>
-      </div>
+      </span>
+      <span id="totalPrice"
+        style="color: #222; font-weight: bold; font-size: 20px; text-align: right; min-width: 90px;">฿0</span>
+      <span id="toggleIcon"
+        style="color: #ffa500; margin-left: 12px; font-size: 1.2em; transition: transform 0.2s;">▼</span>
+    </div>
 
-      <!-- Affiliate Query String (auto-filled, hidden) -->
-      <div style="margin-top: 14px; visibility: hidden; height: 0px">
-        <input type="text" id="qs_aff" name="qs_aff" readonly
-          style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" />
-      </div>
-    </form>
+    <!-- Affiliate Query String (auto-filled, hidden) -->
+    <div style="margin-top: 14px; visibility: hidden; height: 0px">
+      <input type="text" id="qs_aff" name="qs_aff" readonly
+        style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;" />
+    </div>
+  </form>
 
-    <!-- V2: Load scripts via ES Modules -->
-    <script>
-      document.write('<scr' + 'ipt src="/src/data/thai-address-data.js?v=' + __v + '"><\/scr' + 'ipt>');
-      document.write('<scr' + 'ipt src="/src/js/thai-address.js?v=' + __v + '"><\/scr' + 'ipt>');
-      document.write('<scr' + 'ipt type="module" src="/src/js/app.js?v=' + __v + '"><\/scr' + 'ipt>');
-    </script>
+  <!-- V2: Load scripts via ES Modules -->
+  <script>
+    document.write('<scr' + 'ipt src="/src/data/thai-address-data.js?v=' + __v + '"><\/scr' + 'ipt>');
+    document.write('<scr' + 'ipt src="/src/js/thai-address.js?v=' + __v + '"><\/scr' + 'ipt>');
+    document.write('<scr' + 'ipt type="module" src="/src/js/app.js?v=' + __v + '"><\/scr' + 'ipt>');
+  </script>
 
-    <!-- UI-only scripts (no n8n URLs) -->
-    <script>
-      // Mobile download popup
-      document.addEventListener("DOMContentLoaded", function () {
-        var dlBtn = document.getElementById("downloadPromptPayImg");
-        if (dlBtn) {
-          dlBtn.addEventListener("click", function (e) {
-            var isMobile = /android|iphone|ipad|ipod|opera mini|iemobile|mobile/i.test(navigator.userAgent);
-            if (isMobile) {
-              e.preventDefault();
-              // showOrderPopup is loaded from app.js module
-              if (typeof window.showOrderPopup === 'function') {
-                window.showOrderPopup("แจ้งเตือน", 'บนมือถือ กรุณากดค้างที่รูป QR แล้วเลือก "บันทึกรูปภาพ" เพื่อดาวน์โหลด');
-              } else {
-                alert('บนมือถือ กรุณากดค้างที่รูป QR แล้วเลือก "บันทึกรูปภาพ" เพื่อดาวน์โหลด');
-              }
-            }
-          });
-        }
-      });
-
-      // Thai address autocomplete setup
-      document.addEventListener("DOMContentLoaded", function () {
-        if (typeof ThaiAddressAutocomplete !== 'undefined') {
-          new ThaiAddressAutocomplete({
-            subdistrictInput: document.getElementById('subdistrict'),
-            districtInput: document.getElementById('district'),
-            provinceInput: document.getElementById('province'),
-            zipcodeInput: document.getElementById('zipcode'),
-            suggestionsDiv: document.getElementById('suggestions')
-          });
-        }
-      });
-
-      // Enable submit button only if accept_terms is checked
-      document.addEventListener("DOMContentLoaded", function () {
-        var terms = document.getElementById("accept_terms");
-        var submitBtn = document.getElementById("form_submit");
-        if (terms && submitBtn) {
-          function toggleSubmit() {
-            if (terms.checked) {
-              submitBtn.disabled = false;
-              submitBtn.style.opacity = "1";
-              submitBtn.style.cursor = "pointer";
+  <!-- UI-only scripts (no n8n URLs) -->
+  <script>
+    // Mobile download popup
+    document.addEventListener("DOMContentLoaded", function () {
+      var dlBtn = document.getElementById("downloadPromptPayImg");
+      if (dlBtn) {
+        dlBtn.addEventListener("click", function (e) {
+          var isMobile = /android|iphone|ipad|ipod|opera mini|iemobile|mobile/i.test(navigator.userAgent);
+          if (isMobile) {
+            e.preventDefault();
+            // showOrderPopup is loaded from app.js module
+            if (typeof window.showOrderPopup === 'function') {
+              window.showOrderPopup("แจ้งเตือน", 'บนมือถือ กรุณากดค้างที่รูป QR แล้วเลือก "บันทึกรูปภาพ" เพื่อดาวน์โหลด');
             } else {
-              submitBtn.disabled = true;
-              submitBtn.style.opacity = "0.6";
-              submitBtn.style.cursor = "not-allowed";
+              alert('บนมือถือ กรุณากดค้างที่รูป QR แล้วเลือก "บันทึกรูปภาพ" เพื่อดาวน์โหลด');
             }
           }
-          terms.addEventListener("change", toggleSubmit);
-          toggleSubmit();
-        }
+        });
+      }
+    });
 
-        // Sticky summary toggle
-        var priceBar = document.getElementById("summray-price");
-        var cartBox = document.getElementById("cartSummaryBox");
-        var icon = document.getElementById("toggleIcon");
-        var collapsed = true;
-        if (cartBox) cartBox.style.display = "none";
-        if (icon) {
-          icon.textContent = "▼";
-          icon.style.transform = "rotate(180deg)";
+    // Thai address autocomplete setup
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof ThaiAddressAutocomplete !== 'undefined') {
+        new ThaiAddressAutocomplete({
+          subdistrictInput: document.getElementById('subdistrict'),
+          districtInput: document.getElementById('district'),
+          provinceInput: document.getElementById('province'),
+          zipcodeInput: document.getElementById('zipcode'),
+          suggestionsDiv: document.getElementById('suggestions')
+        });
+      }
+    });
+
+    // Enable submit button only if accept_terms is checked
+    document.addEventListener("DOMContentLoaded", function () {
+      var terms = document.getElementById("accept_terms");
+      var submitBtn = document.getElementById("form_submit");
+      if (terms && submitBtn) {
+        function toggleSubmit() {
+          if (terms.checked) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = "1";
+            submitBtn.style.cursor = "pointer";
+          } else {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.6";
+            submitBtn.style.cursor = "not-allowed";
+          }
         }
-        if (priceBar && cartBox && icon) {
-          priceBar.addEventListener("click", function () {
-            collapsed = !collapsed;
-            cartBox.style.display = collapsed ? "none" : "block";
-            icon.textContent = collapsed ? "▼" : "▲";
-            icon.style.transform = collapsed ? "rotate(180deg)" : "none";
-          });
-        }
-      });
-    </script>
-  </body>
+        terms.addEventListener("change", toggleSubmit);
+        toggleSubmit();
+      }
+
+      // Sticky summary toggle
+      var priceBar = document.getElementById("summray-price");
+      var cartBox = document.getElementById("cartSummaryBox");
+      var icon = document.getElementById("toggleIcon");
+      var collapsed = true;
+      if (cartBox) cartBox.style.display = "none";
+      if (icon) {
+        icon.textContent = "▼";
+        icon.style.transform = "rotate(180deg)";
+      }
+      if (priceBar && cartBox && icon) {
+        priceBar.addEventListener("click", function () {
+          collapsed = !collapsed;
+          cartBox.style.display = collapsed ? "none" : "block";
+          icon.textContent = collapsed ? "▼" : "▲";
+          icon.style.transform = collapsed ? "rotate(180deg)" : "none";
+        });
+      }
+    });
+  </script>
+</body>
+
 </html>
