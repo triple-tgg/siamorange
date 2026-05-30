@@ -307,17 +307,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Load shipping rules
   await loadShippingRules();
 
-  // Try to load products from API, fallback to inline HTML data
+  // Load products from API (single source of truth)
   try {
     productCatalog = await getProducts();
     renderProducts(productCatalog);
   } catch (err) {
-    console.warn('Failed to load products from API, falling back to inline data:', err);
-    const productsDataEl = document.getElementById('productsData');
-    if (productsDataEl) {
-      productCatalog = JSON.parse(productsDataEl.textContent.trim());
-      // No need to render since inline script already rendered it
-    }
+    console.error('Failed to load products from API:', err);
+    const wrapPc = document.getElementById('product_gallery_pc');
+    if (wrapPc) wrapPc.innerHTML = '<p style="color:#e74c3c;text-align:center;grid-column:1/-1;">⚠️ ไม่สามารถโหลดสินค้าได้ กรุณารีเฟรชหน้าใหม่</p>';
   }
 
   // Set minimum date to today
